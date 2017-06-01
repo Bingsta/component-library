@@ -30,9 +30,16 @@
           </div>
           
         </div>
-        <div class="app-page__content app-page__list app-moneyDueIn">
+        <div class="app-page__content app-page__list app-bankStatementReceipt">
           <div class="app-page-list__list-container">
             <div class="app-page-list__header">
+                
+              <div class="well well-sm" data-bind="if: selectedItem">
+                  Searching for receipt reference: <strong data-bind="text:selectedItem().reference"></strong>, 
+                  Amount: £<strong data-bind="text:selectedItem().amount"></strong>,
+                  Date: <strong data-bind="text:selectedItem().date"></strong>
+              </div>
+
               <div class="app-page-list__search grid grid--padded-sm">
                 <form class="form-inline grid__item grid__item--fill">
                   <div class="form-group">
@@ -87,44 +94,44 @@
                 <thead>
                   <tr role="row">
                     <th rowspan="2" class="sorting_asc" tabindex="0">Reference</th>
-                    <th rowspan="2" class="sorting" tabindex="0"  width="100">Owed by</th>
-                    <th rowspan="2" class="sorting" tabindex="0"  width="30" >Type</th>
-                    <th rowspan="2" class="sorting" tabindex="0"   width="150">Regarding</th>
-                    <th rowspan="2" class="sorting" tabindex="0"   >Due on</th>
-                    <th rowspan="2" class="sorting" tabindex="0"  >Pay to</th>
-                    <th rowspan="1" colspan="3">Amounts (£)</th>
-                    <th rowspan="2" class="sorting" tabindex="0" width="30" >Notes</th>
+                    <th rowspan="2" class="sorting" tabindex="0" style="min-width:100px">Owed by</th>
+                    <th rowspan="2" class="sorting" tabindex="0" style="min-width:50px">Type</th>
+                    <th rowspan="2" class="sorting" tabindex="0" style="min-width:150px">Regarding</th>
+                    <th rowspan="2" class="sorting" tabindex="0" style="min-width:70px">Due on</th>
+                    <th rowspan="2" class="sorting" tabindex="0" style="min-width:100px">Pay to</th>
+                    <th rowspan="1" colspan="2">Amounts (£)</th>
+                    <th rowspan="2" class="sorting" tabindex="0" rowspan="1" colspan="1" style="min-width:200px">Allocate to item</th>
+                    <th rowspan="2" class="sorting" tabindex="0" width="30" style="min-width:50px">Notes</th>
                   </tr>
                   <tr>
 
-                    <th class="sorting_asc th--sub" tabindex="0" rowspan="1" colspan="1" >Total</th>
-                    <th class="sorting th--sub" tabindex="0" rowspan="1" colspan="1" >Bal</th>
-                    <th class="sorting th--sub" tabindex="0" rowspan="1" colspan="1"   width="200">Pay</th>
+                    <th class="sorting_asc th--sub" tabindex="0" rowspan="1" colspan="1" style="min-width:50px">Total</th>
+                    <th class="sorting th--sub" tabindex="0" rowspan="1" colspan="1" style="min-width:50px">Bal</th>
                   </tr>
                 </thead>
               </table>
             </div>
           </div>
           <div class="app-page-list__aside list-aside grid__item">
-            <!-- ko if: selectedModeState() == modeEnum.manual -->
             <div class="list-aside__header">
               <h4>Items to receipt</h4>
             </div>
-            <div class="list-aside__items">
-              <!-- ko if:basket().length > 0 -->
-              <table class="table">
-                <tbody data-bind="foreach: basket()">
-                  <tr class="list-aside-item">
-                    <td data-bind="text:id"></td>
-                    <td data-bind="text:amount.toLocaleString('en-UK', {style:'currency', currency:'GBP'})"></td>
-                    <td><button class="btn btn-default btn-xs" data-bind="click:$parent.removeReceipt.bind($parent)">remove</button></td>
+            <div class="list-aside__items  bank-statement-items">
+              <table class="table table-hover">
+                <tbody data-bind="foreach: bankStatementData()">
+                  <tr class="list-aside-item" data-bind="click:$parent.selectItem.bind($parent), css:{active: (reference==($parent.selectedItem() ? $parent.selectedItem().reference : '')), success: status() == 'confirmed', warning: status() == 'auto-allocated', danger: status() == 'unallocated'}">
+                    <td>
+                        <div class="list-lead" data-bind="text:'£' + amount.toLocaleString('en-UK', {style:'currency', currency:'GBP'})"></div>
+                        <div><i data-bind="css:{'icon-magic-wand' : status() == 'auto-allocated', 'icon-checkmark' : status() == 'confirmed', 'icon-question5' : status() == 'unallocated' }"></i> <span  data-bind="text:status"></span></div>
+                    </td>
+                    <td>
+                        <div class="list-lead" data-bind="text:reference"></div>
+                        <div data-bind="text:date"></div>
+                    </td>
+                    <!--<td><button class="btn btn-default btn-xs" data-bind="click:$parent.removeReceipt.bind($parent)">remove</button></td>-->
                   </tr>
                 </tbody>
               </table>
-              <!-- /ko -->
-              <!-- ko if:basket().length == 0 -->
-                <div class="list-aside__blankstate">There are currently no items to receipt. To receipt an invoice. Enter an amount in the pay column and click "pay".</div>
-              <!-- /ko -->
               
               
                 <!-- Modal -->
@@ -138,7 +145,7 @@
                       <div class="modal-body text-center" data-bind="css: {'alert-warning': (receiptsProcessingState() == processEnum.notStarted), 'alert-success': (receiptsProcessingState() == processEnum.completed)}">
                         <!-- ko if:receiptsProcessingState() == processEnum.notStarted -->
                         <p><i class="icon-warning icon"></i></p>
-                        <p>Are you sure you want to process these <span data-bind="text: basket().length"></span> receipts?</p>
+                        <p>Are you sure you want to process these <span data-bind="text: confirmedItemCount()"></span> receipts?</p>
                         <p><strong>You cannot undo this once processed!</strong> </p>
                         <!-- /ko -->
 
@@ -171,23 +178,12 @@
                 </div>
               <!-- /ko -->
             </div>
-            <!-- /ko -->
-            <!-- ko if: selectedModeState() == modeEnum.bankStatement -->
-            
-            <div class="list-aside__header">
-              <h4>Items imported from bank statement</h4>
-            </div>
-            <div class="list-aside__items">
-Items
-            </div>
-            
-            <!-- /ko -->
             <div class="list-aside__footer grid grid--padded-sm">
               <div class="grid__item">
                 <button class="btn btn-default btn-lg" data-bind="click: saveReceipts, css: {disabled: basket().length == 0}">Save</button>
               </div>
               <div class="grid__item">
-                <button class="btn btn-success grid__item btn-lg" data-bind="click: processReceipts, css: {disabled: basket().length == 0}">Process receipts</button>
+                <button class="btn btn-success grid__item btn-lg" data-bind="click: processReceipts, css: {disabled: processReceiptsDisabled()}">Process receipts</button>
               </div>
             </div>
           </div>

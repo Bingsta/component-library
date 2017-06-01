@@ -9,7 +9,7 @@
   "author": "Lee Crosby",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^7.0.22",
+    "@types/node": "^7.0.23",
     "browser-sync": "^2.10.1",
     "del": "^2.2.0",
     "gulp": "^3.9.1",

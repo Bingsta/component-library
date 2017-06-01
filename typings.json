@@ -1,6 +1,15 @@
 {
+    "resolution": {
+    "main": "typings/index"
+  },
   "ambientDependencies": {
-    "jquery": "registry:dt/jquery#1.10.0+20160316155526",
-    "knockout": "registry:dt/knockout#0.0.0+20160409112158"
+    "jquery": "registry:dt/jquery#1.10.0+20170310222111"
+  },
+  "globalDependencies": {
+    "datatables.net": "registry:dt/datatables.net#1.10.9+20170310115247",
+    "datatables.net-buttons": "registry:dt/datatables.net-buttons#1.1.0+20170322224258"
+  },
+  "dependencies": {
+    "knockout": "registry:npm/knockout#3.4.0+20160516171930"
   }
 }

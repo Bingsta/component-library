@@ -88,20 +88,20 @@ body, html{
 }
 
 /* Medium devices (desktops, 992px and up) */
-@media (min-width: @screen-lg-min) { 
-  .app-menu{
-    width:@menu-width-full;
-  }
+// @media (min-width: @screen-lg-min) { 
+//   .app-menu{
+//     width:@menu-width-full;
+//   }
   
-  .app-main {
-    width:~"calc(100% - @{menu-width-full})";
-  }
+//   .app-main {
+//     width:~"calc(100% - @{menu-width-full})";
+//   }
 
-  .app-header{
-    width:~"calc(100% - @{menu-width-full})";
-    margin-left:@menu-width-full;
-  }
-}
+//   .app-header{
+//     width:~"calc(100% - @{menu-width-full})";
+//     margin-left:@menu-width-full;
+//   }
+// }
 
 
 .app-page {
@@ -325,7 +325,6 @@ body, html{
 .list-aside{
   min-width:300px;
   max-width:300px;
-  background-color:#f2f2f2;
   display:flex;
   flex-direction: column;
   max-height:100%;
@@ -357,4 +356,20 @@ height:40px;
 
 .list-aside-item__icon{
   cursor: pointer;
+}
+
+.list-lead{
+  font-size:1.6rem;
+}
+
+.app-bankStatementReceipt{
+
+    .list-aside{
+      min-width:400px;
+      max-width:400px;
+      tr.active td{
+        font-weight:600;
+      }
+    } 
+
 }
