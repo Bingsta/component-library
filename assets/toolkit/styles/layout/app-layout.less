@@ -1,0 +1,360 @@
+@import "variables.less";
+@import "../theme/variables.less";
+
+@menu-color:      lighten(@brand-primary, 5%);
+
+body, html{
+  height:100%;
+}
+.app-container{
+  width:100%;
+  height:100%;
+  box-sizing: border-box;
+  display:flex;
+}
+.app-menu{
+  width:@menu-width-collapsed;
+  height:100%;
+  overflow-y:auto;
+  overflow-x:visible;
+ 
+  color:#fff;
+  background-image: linear-gradient(#13547A, #4D94BE 100%);
+
+  border-right:1px solid #000;
+
+  .nav-pills > li.active > a, 
+  .nav-pills > li.active > a:hover,
+  .nav-pills > li.active > a:focus {
+      color: #fff;
+      background-color: rgba(9,59,88,1);
+  }
+
+  .nav-pills > li > a, 
+  .nav-pills > li > a:hover, 
+  .nav-pills > li > a:focus {
+      border-radius: 0px;
+      color:#fff;
+      border:1px dotted transparent;
+      font-weight:@light;
+  } 
+  .nav-pills > li > a:hover, 
+  .nav-pills > li > a:focus {
+      background-color: rgba(9,59,88,0.5);
+      border:1px dotted transparent;
+  }
+  .nav-pills > li > a:focus {
+      background-color:transparent;
+      background-color: rgba(9,59,88,0.5);
+  }
+}
+
+.app-menu-group + .app-menu-group{
+}
+
+.app-brand{
+  height:@navbar-height;
+  box-sizing: content-box;
+
+  display:flex;
+  align-items:center;
+  justify-content: center;
+  
+  
+  background-color: @navbar-inverse-bg;
+  border:1px solid @navbar-inverse-border;
+}
+
+.app-main {
+  height:100%;
+  width:~"calc(100% - @{menu-width-collapsed})";
+}
+
+.app-header{
+  width:~"calc(100% - @{menu-width-collapsed})";
+  height:@navbar-height;
+
+  position:fixed;
+  top:0;
+  left:0;
+
+  margin-left:@menu-width-collapsed;
+}
+
+.app-page-container {
+  margin-top:@navbar-height;
+  height:~"calc(100% - @{navbar-height})";
+  overflow:auto;
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: @screen-lg-min) { 
+  .app-menu{
+    width:@menu-width-full;
+  }
+  
+  .app-main {
+    width:~"calc(100% - @{menu-width-full})";
+  }
+
+  .app-header{
+    width:~"calc(100% - @{menu-width-full})";
+    margin-left:@menu-width-full;
+  }
+}
+
+
+.app-page {
+  height:100%;
+  display:flex;
+  flex-direction: column;
+}
+
+// @masthead-base-colour: rgba(9,59,88,1);
+// @masthead-type-colour: rgba(255,255,255,0.85);
+
+@masthead-base-colour: #ccc;
+@masthead-type-colour: rgba(0,0,0,0.85);
+
+@masthead-base-contrast: 15;
+
+@masthead-base-second-contrast: @masthead-base-contrast/2;
+
+
+//#MASTHEAD
+.app-page-masthead__titlebar{
+  width:100%;
+  padding:3rem 2rem 2rem;
+
+  display:flex;
+  align-items: flex-end;
+
+  background-color:@masthead-base-colour;
+  color:@masthead-type-colour;
+
+}
+.app-page-masthead__titlebar-title{
+  margin:0;
+  padding:0;
+}
+.app-page-masthead__titlebar-left{
+  flex:1;
+}
+.app-page-masthead__titlebar-right{
+  display:flex;
+  align-items: center;
+  > div + div{
+    margin-left:1rem;
+  }
+}
+.branch-data-select__label{
+  font-weight:normal;
+}
+
+.app-page-masthead__tabs{
+  background-color:@masthead-base-colour;
+}
+
+.app-page-masthead__tabs > .nav-tabs{
+  padding:0 2rem;
+  border-bottom:1px solid lighten(@masthead-base-colour, @masthead-base-contrast);
+  > li {
+    > a{
+      color:@masthead-type-colour;
+    }
+  }
+  
+  > li.active > a,  > li.active > a:hover,  > li.active > a:focus {
+    color: @masthead-type-colour;
+    background-color:lighten(@masthead-base-colour, @masthead-base-contrast);
+    border: 1px solid lighten(@masthead-base-colour, @masthead-base-contrast);
+    border-bottom-color: transparent;
+    cursor: default;
+  }
+
+  > li > a:hover {
+    border: 1px solid lighten(@masthead-base-colour, @masthead-base-second-contrast);
+    border-bottom-color: transparent;
+  }
+
+   > li > a:hover,  > li > a:focus {
+    text-decoration: none;
+    background-color:lighten(@masthead-base-colour, @masthead-base-second-contrast);
+}
+}
+
+
+.app-page-masthead__content{
+
+  background-color:lighten(@masthead-base-colour, @masthead-base-contrast);
+  color:@masthead-type-colour;
+  padding:2rem;
+}
+
+
+.app-page-masthead__content-tabs-content{
+
+}
+
+
+.app-page-masthead__content-section{
+  box-sizing:border-box;
+  padding:0 2rem 0 0;
+
+  > .section {
+    >table{
+      tr:hover{
+        background-color:lighten(@masthead-base-colour, @masthead-base-second-contrast);;
+      }
+      td{
+        padding:0.5rem 0;
+      }
+      width:100%;
+      .action{
+        width:30px;
+      }
+      .count{
+        width:50px;
+      }
+      .amount{
+        width:100px;
+        font-weight:@semi-bold;
+      }
+      .total-row{
+        .title, .amount{
+          font-weight:@semi-bold;
+          font-size:1.6rem;
+        }
+      }
+    }
+  }
+}
+.app-page-masthead__content-section + .app-page-masthead__content-section{
+  padding-left:2rem;
+  padding-right:0;
+}
+
+.grid {
+  display:flex;
+  width:100%;
+  align-items: stretch;
+}
+
+.grid-equals{
+  > .grid__item{
+    flex:1;
+  }
+}
+
+.grid--padded{
+  .grid__item + .grid__item{
+    padding-left:4rem;
+  }
+}
+
+.grid--padded-sm{
+  .grid__item + .grid__item{
+    padding-left:1rem;
+  }
+}
+
+.grid-row{
+  flex-direction: row;
+  align-items:center;
+}
+ .grid-row--fill{
+
+ }
+.grid-row--align-right{
+  justify-content: flex-end;
+}
+.grid__item--fill {
+  flex:1;
+}
+
+.grid-item__footer, .grid-item__header {
+  padding:1rem 0;
+  > .grid__item + .grid__item{
+    padding-left:1rem;
+  }
+}
+
+
+//#CONTENT
+.app-page__content{
+  box-sizing:border-box;
+  padding:2rem;
+  flex:1;
+}
+
+.app-page-content__section{
+  padding-bottom:2rem;
+}
+
+.app-page-content__section + .app-page-content__section{
+}
+
+
+//#MONEY DUE IN LIST
+
+.app-page__list{
+  display:flex;
+  width:100%;
+  padding:0;
+}
+.table-content{
+  width:4000px;
+  height:4000px;
+}
+#main-table{
+  width:100%;
+  border-collapse: collapse !important;
+  th{
+    background-color:#ddd;
+    border:1px solid #fff;
+  }
+  th.th--sub{
+    background-color:#eee;
+    border:1px solid #fff;
+    font-weight:normal;
+  }
+  th, td{
+    white-space: nowrap;
+  }
+}
+.list-aside{
+  min-width:300px;
+  max-width:300px;
+  background-color:#f2f2f2;
+  display:flex;
+  flex-direction: column;
+  max-height:100%;
+  box-sizing: border-box;
+  padding:1rem;
+}
+
+.list-aside__header{
+height:40px;
+}
+.list-aside__footer{
+  padding:1rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+.list-aside__items{
+  flex:1;
+  overflow:auto;
+}
+
+.app-page-list__list-container{
+  overflow: auto;
+  flex:1;
+}
+
+.app-page-list__header{
+  padding:1rem 2rem;
+}
+
+.list-aside-item__icon{
+  cursor: pointer;
+}

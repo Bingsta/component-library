@@ -1,0 +1,200 @@
+<div class="app-container">
+  <!-- ko widget: {kind:'productNavigation'}--><!--/ko-->
+  <div class="app-main">
+    <div class="app-header">
+      <!-- ko widget: {kind:'globalHeader'}--><!--/ko-->
+    </div>
+    <div class="app-page-container"> 
+      <div class="app-page app-dashboard">
+
+        <div class="app-page-masthead app-page__header">
+
+          <div class="app-page-masthead__titlebar"> 
+            <div class="app-page-masthead__titlebar-left"> 
+              <h2 class="app-page-masthead__titlebar-title">Accounting</h2>
+            </div>
+            <div class="app-page-masthead__titlebar-right">
+              <div>
+                <label class="branch-data-select__label" for="branch-data-select">Showing data from </label>
+              </div>
+              <div>
+                <select id="branch-data-select" class="form-control">
+                  <option>All branches</option>
+                  <option>Swansea branch</option>
+                  <option>Cardiff branch</option>
+                  <option>Newport branch</option>
+                  <option>Pontpandy branch</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="app-page-masthead__tabs">
+            <ul class="nav nav-tabs">
+              <li role="presentation" class="active"><a href="#">Expected payments</a></li>
+              <li role="presentation"><a href="#">Completed payments</a></li>
+            </ul>
+          </div>
+          <div class="app-page-masthead__content">
+            <div class="app-page-masthead__content-tabs-content grid grid-equals">
+
+              <div class="app-page-masthead__content-section grid__item">
+                <div class="grid-item__header  grid grid-row">
+                    <div class="grid__item grid__item--fill"><h4>Money due in</h4></div>
+                    <div class="grid__item" ><i class="icon-notification"></i> Last import <strong>19th May</strong>.</div>
+                    <div class="grid__item"><button class="btn btn-accent">Import a bank statement</button></div>
+                </div>
+                  <div class="section">
+                    <table>
+                      <tbody>
+                        <!-- ko foreach: moneyDueInData.items -->
+                        <tr>
+                          <td class="title">
+                            <span data-bind="text:$data.title"></span> <label class="badge badge-accent" data-bind="text:count"></label>
+                          </td>
+                          <td class="amount" data-bind="text:amount.toLocaleString('en-UK', {style:'currency', currency:'GBP'})">
+                            
+                          </td>
+                          <td class="action">
+                            <i class="icon-arrow-right2"></i>
+                          </td>
+                        </tr>
+                        <!-- /ko -->
+                        <tr class="total-row">
+                          <td class="title">
+                            Total <label class="badge badge-accent" data-bind="text:moneyDueInData.total.count"></label>
+                          </td>
+                          <td class="amount" data-bind="text:moneyDueInData.total.amount().toLocaleString('en-UK', {style:'currency', currency:'GBP'})">
+                            
+                          </td>
+                          <td class="action">
+                            <i class="icon-arrow-right2"></i>
+                          </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+              <div class="app-page-masthead__content-section grid__item">
+                  <div class="grid-item__header">
+                    <h4>Money due out</h4>
+                  </div>
+                  <div class="section">
+                    <table data-bind="foreach: moneyDueOut">
+                      <tr>
+                        <td class="title">
+                          <span data-bind="text:title"> <label class="badge badge-accent" data-bind="text:count">24</label>
+                        </td>
+                        <td class="amount" data-bind="text:amount.toLocaleString('en-UK', {style:'currency', currency:'GBP'})">
+                        </td>
+                        <td class="action">
+                          <i class="icon-arrow-right2"></i>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-page__content">
+          <section class="app-page-content__section">
+            <h3>Accounts</h3>
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>
+                    Account
+                  </th>
+                  <th>
+                    Type
+                  </th>
+                  <th>
+                    Balance
+                  </th>
+                  <th colspan="2">
+                    Last reconcile
+                  </th>
+                </tr>
+              </thead>
+              <tbody data-bind="foreach:accounts">
+                <tr>
+                  <td data-bind="text:title"></td>
+                  <td data-bind="text:type"></td>
+                  <td data-bind="text:balance.toLocaleString('en-UK', {style:'currency', currency:'GBP'})"></td>
+                  <td data-bind="text:$parent.dateFormat(lastReconcile, 'Do MMM')"></td>
+                  <td>
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-default  btn-xs">Reconcile</button>
+                      <button type="button" class="btn btn-default  btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li class="dropdown-header">Dropdown header</li>
+                        <li><a href="#">Something else here</a></li>
+                        <li class="disabled"><a href="#">Disabled link</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="app-page-content__section grid grid-equals grid--padded">
+            <div class="grid__item">
+              <h4>System accounts</h4>
+
+                <table class="table table-hover">
+                  <tbody data-bind="foreach:systemAccounts">
+                    <tr>
+                      <td data-bind="text:title"></td>
+                      <td data-bind="text:balance.toLocaleString('en-UK', {style:'currency', currency:'GBP'})"></td>
+                      <td>
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="icon-menu3"></i></span>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li class="dropdown-header">Dropdown header</li>
+                            <li><a href="#">Something else here</a></li>
+                            <li class="disabled"><a href="#">Disabled link</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                  </tbody>
+                </table>
+            </div>
+            <div class="grid__item">
+              <h4>Sub accounts</h4>
+              
+
+                <table class="table table-hover">
+                  <tbody data-bind="foreach:subAccounts">
+                    <tr>
+                      <td data-bind="text:title"></td>
+                      <td><label class="badge badge-accent" data-bind="text:count"></label></td>
+                    </tr>
+                  </tbody>
+                </table>
+            
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  
+</div>

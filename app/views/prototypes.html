@@ -1,0 +1,15 @@
+<section class="cl-main-section">
+    <header class="cl-page-header">
+      <h1>
+        Home
+        <small>component-library</small>
+      </h1>
+    </header>
+    <article class="cl-article">
+      <h3>Section</h3>
+      <ul class="cl-link-list" data-bind="foreach:childRouter.routes">
+        <li class="cl-link-list__item"><a  class="cl-link-list__link" data-bind="text:title, attr: { href: hash }"></a></li>
+      </ul>
+    </article>
+    
+</section>

@@ -1,0 +1,25 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "rootDir": "app/",
+        "baseUrl": "dist/",
+         "module":"amd",
+        "sourceMap": true,
+        "target": "es5",
+        "allowJs":true,
+        "noImplicitAny": false,
+        "noResolve": true,
+        "removeComments": true,
+        "noLib": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "pretty": true,
+        "allowSyntheticDefaultImports": false
+    },
+    "exclude": [
+        "node_modules",
+        "typings/main",
+        "typings/main.d.ts"
+    ]
+   
+}

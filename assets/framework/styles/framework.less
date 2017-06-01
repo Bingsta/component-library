@@ -1,0 +1,126 @@
+@menubar-width: 26rem;
+
+html{
+  box-sizing: border-box;
+  height:100%;
+  overflow: hidden;
+}
+body{
+  box-sizing: border-box;
+  height:100%;
+}
+#applicationHost{
+  box-sizing: border-box;
+  height:100%;
+}
+.cl-app{
+  display:flex;
+  flex-direction: row;
+
+  box-sizing: border-box;
+  height:100%;
+}
+
+//#CL-MENUBAR
+.cl-menubar {
+  overflow-y: auto;
+  position:relative;
+
+  box-sizing: border-box;
+  width:@menubar-width;
+  padding:2rem 0;
+
+  background-color:rgba(0,0,0,0.03);
+  border-right:1px solid rgba(0,0,0,0.1);
+}
+.cl-menu{
+  margin:0;
+  padding:0;
+
+  list-style:none;
+}
+.cl-menu__menuitem > a{
+  display:inline-block;
+  box-sizing:border-box;
+  width:100%;
+  padding:0.4rem 2rem;
+  
+  border-top:1px solid transparent;
+  border-bottom:1px solid transparent;
+
+  font-size: 1.6rem;
+  color:rgba(0,0,0,0.85);
+  text-align:right;
+}
+.cl-menu__menuitem a:hover{
+  background-color:rgba(0,0,0,0.025);
+  text-decoration: none;
+}
+.cl-menu__menuitem.active a{
+  background-color:rgba(0,0,0,0.08);
+  text-decoration: none;
+
+  border-top:1px solid rgba(0,0,0,0.05);
+  border-bottom:1px solid rgba(0,0,0,0.05);
+}
+
+.cl-display-menu {
+  position:fixed;
+  top:3px;
+  left:3px;
+  border-radius: 4px;
+  background-color:rgba(0,0,0,0.6);;
+  width:30px;
+  height:30px;
+  z-index:100;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  border:1px solid rgba(0,0,0,0.12);
+  opacity: 0.3;
+}
+
+.cl-display-menu:hover{
+  opacity:1;
+  cursor: pointer;
+}
+
+.cl-app--hideMenu .cl-menubar{
+  width:0;
+}
+
+//#CL-MAIN
+.cl-main {
+  position:relative;
+  flex:1;
+  width:100%;
+  box-sizing: border-box;
+}
+.cl-loader {
+  position:absolute;
+  top:0;
+  width:100%;
+  height:100%;
+
+  display:flex;
+  align-items:center;
+  justify-content: center;
+
+  z-index:100;
+  padding:1rem;
+
+  background-color:rgba(255,255,255,0.65);
+  color:rgba(0,0,0,0.65);
+}
+.cl-main__content {
+  box-sizing:border-box;
+  width:100%;
+  height:100%;
+}
+.cl-page-header {
+  padding:2rem 2rem 0.5rem;
+  background-color:rgba(0,0,0,0.06);
+}
+.cl-article{
+  padding:2rem;
+}

@@ -1,0 +1,158 @@
+<div class="app-container">
+  <!-- ko widget: {kind:'productNavigation'}--><!--/ko-->
+  <div class="app-main">
+    <div class="app-header">
+      <!-- ko widget: {kind:'globalHeader'}--><!--/ko-->
+    </div>
+    <div class="app-page-container"> 
+      <div class="app-page app-list">
+
+        <div class="app-page-masthead app-page__header">
+
+          <div class="app-page-masthead__titlebar"> 
+            <div class="app-page-masthead__titlebar-left"> 
+              <h2 class="app-page-masthead__titlebar-title">Money due in</h2>
+            </div>
+            <div class="app-page-masthead__titlebar-right">
+              <div>
+                <label class="branch-data-select__label" for="branch-data-select">Showing data from </label>
+              </div>
+              <div>
+                <select id="branch-data-select" class="form-control">
+                  <option>All branches</option>
+                  <option>Swansea branch</option>
+                  <option>Cardiff branch</option>
+                  <option>Newport branch</option>
+                  <option>Pontpandy branch</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="app-page__content app-page__list app-moneyDueIn">
+          <div class="app-page-list__list-container">
+            <div class="app-page-list__header">
+              <div class="app-page-list__search grid grid--padded-sm">
+                <form class="form-inline grid__item grid__item--fill">
+                  <div class="form-group">
+                    <div class="input-group">
+                      <input type="search" class="form-control" id="list-search" style="width:300px" placeholder="Payment ref or amount etc." data-bind="textInput:searchText"/>
+                      <span class="input-group-addon" id="basic-addon1"><i class="icon-search2"></i></span>
+                    </div>
+                  </div>
+                </form>
+                <div class="app-page-list__filters grid__item">
+                  <button class="btn btn-default">Upload bank statement</button>
+                </div>
+                <div class="app-page-default grid__item">
+                  <button class="btn btn-default">Filters <i class="icon-plus2"></i></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="app-page-list__list">
+              <div class="table-container"></div>
+              <table id="main-table" class="display dataTable table table-hover table-striped" cellspacing="0" role="grid" aria-describedby="example_info">
+                <thead>
+                  <tr role="row">
+                    <th rowspan="2" class="sorting_asc" tabindex="0">Reference</th>
+                    <th rowspan="2" class="sorting" tabindex="0"  width="100">Owed by</th>
+                    <th rowspan="2" class="sorting" tabindex="0"  width="30" >Type</th>
+                    <th rowspan="2" class="sorting" tabindex="0"   width="150">Regarding</th>
+                    <th rowspan="2" class="sorting" tabindex="0"   >Due on</th>
+                    <th rowspan="2" class="sorting" tabindex="0"  >Pay to</th>
+                    <th rowspan="1" colspan="3">Amounts (£)</th>
+                    <th rowspan="2" class="sorting" tabindex="0" width="30" >Notes</th>
+                  </tr>
+                  <tr>
+
+                    <th class="sorting_asc th--sub" tabindex="0" rowspan="1" colspan="1" >Total</th>
+                    <th class="sorting th--sub" tabindex="0" rowspan="1" colspan="1" >Bal</th>
+                    <th class="sorting th--sub" tabindex="0" rowspan="1" colspan="1"   width="200">Pay</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+          <div class="app-page-list__aside list-aside grid__item">
+            <div class="list-aside__header">
+              <h4>Items to receipt</h4>
+            </div>
+            <div class="list-aside__items">
+              <!-- ko if:basket().length > 0 -->
+              <table class="table">
+                <tbody data-bind="foreach: basket()">
+                  <tr class="list-aside-item">
+                    <td data-bind="text:id"></td>
+                    <td data-bind="text:amount.toLocaleString('en-UK', {style:'currency', currency:'GBP'})"></td>
+                    <td><button class="btn btn-default btn-xs" data-bind="click:$parent.removeReceipt.bind($parent)">remove</button></td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- /ko -->
+              <!-- ko if:basket().length == 0 -->
+                <div class="list-aside__blankstate">There are currently no items to receipt. To receipt an invoice. Enter an amount in the pay column and click "pay".</div>
+              <!-- /ko -->
+              
+              
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content ">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Process receipts</h4>
+                      </div>
+                      <div class="modal-body text-center" data-bind="css: {'alert-warning': (receiptsProcessingState() == processEnum.notStarted), 'alert-success': (receiptsProcessingState() == processEnum.completed)}">
+                        <!-- ko if:receiptsProcessingState() == processEnum.notStarted -->
+                        <p><i class="icon-warning icon"></i></p>
+                        <p>Are you sure you want to process these <span data-bind="text: basket().length"></span> receipts?</p>
+                        <p><strong>You cannot undo this once processed!</strong> </p>
+                        <!-- /ko -->
+
+                        <!-- ko if:receiptsProcessingState() == processEnum.started -->
+                        <p>Processing...</p>
+                        <!-- /ko -->
+
+                        
+                        <!-- ko if:receiptsProcessingState() == processEnum.completed -->
+                        <p>Completed!</p>
+                        <!-- /ko -->
+                      </div>
+                      <div class="modal-footer">
+                        <!-- ko if:receiptsProcessingState() == processEnum.notStarted -->
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-success" data-bind="click: confirmProcessing">Proceed</button>
+                        <!-- /ko -->
+
+                        <!-- ko if:receiptsProcessingState() == processEnum.started -->
+                        <!-- /ko -->
+
+                        
+                        <!-- ko if:receiptsProcessingState() == processEnum.completed -->
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Done</button>
+                        <!-- /ko -->
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <!-- /ko -->
+            </div>
+            <div class="list-aside__footer grid grid--padded-sm">
+              <div class="grid__item">
+                <button class="btn btn-default btn-lg" data-bind="click: saveReceipts, css: {disabled: basket().length == 0}">Save</button>
+              </div>
+              <div class="grid__item">
+                <button class="btn btn-success grid__item btn-lg" data-bind="click: processReceipts, css: {disabled: basket().length == 0}">Process receipts</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  
+</div>

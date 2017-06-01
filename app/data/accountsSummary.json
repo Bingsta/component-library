@@ -1,0 +1,5 @@
+[
+  {"title": "Client account", "type": "Client", "balance": 500000,    "lastReconcile": "23/5/2017"},
+  {"title": "Deposit account", "type": "Deposit",  "balance": 500000,    "lastReconcile": "23/5/2017"},
+  {"title": "Cash account", "type": "Cash", "balance": 500000,    "lastReconcile": "23/5/2017"}
+]
