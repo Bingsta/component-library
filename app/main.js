@@ -4,7 +4,7 @@ requirejs.config({
         'durandal': '/node_modules/durandal/js',
         'plugins': '/node_modules/durandal/js/plugins',
         'transitions': '/node_modules/durandal/js/transitions',
-        'knockout': '/node_modules/knockout/build/output/knockout-latest.debug',
+        'knockout': '/node_modules/knockout/build/output/knockout-latest',
         'jquery': '/node_modules/jquery/dist/jquery',
         'bootstrap': '/node_modules/bootstrap/dist/js/bootstrap',
         'moment': '/node_modules/moment/moment',

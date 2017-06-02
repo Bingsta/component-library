@@ -1,11 +1,11 @@
 import * as router from 'plugins/router';
 import * as app from 'durandal/app';
 import * as ko from 'knockout';
-import * as global from 'global';
+import * as controller from 'Controller';
 
 class Shell {
 public router = router;
-public ui = global.instance;
+public controller = controller.instance;
 
   activate() {
     router.map([

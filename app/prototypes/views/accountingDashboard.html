@@ -42,13 +42,13 @@
                 <div class="grid-item__header  grid grid-row">
                     <div class="grid__item grid__item--fill"><h4>Money due in</h4></div>
                     <div class="grid__item" ><i class="icon-notification"></i> Last import <strong>19th May</strong>.</div>
-                    <div class="grid__item"><button class="btn btn-accent">Import a bank statement</button></div>
+                    <div class="grid__item"><button class="btn btn-accent" data-bind="click:showImportModal">Import a bank statement</button></div>
                 </div>
                   <div class="section">
                     <table>
                       <tbody>
                         <!-- ko foreach: moneyDueInData.items -->
-                        <tr>
+                        <tr data-bind="click:$parent.goToPage.bind(this,'moneyDueIn')">
                           <td class="title">
                             <span data-bind="text:$data.title"></span> <label class="badge badge-accent" data-bind="text:count"></label>
                           </td>

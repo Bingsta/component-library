@@ -1,10 +1,11 @@
 import * as ko from 'knockout';
 import * as system from 'durandal/system';
 import * as app from 'durandal/app';
-import * as globalui from 'global';
+import * as router from 'plugins/router';
+import * as controller from 'Controller';
 import * as $ from 'jquery';
-import {dataTables} from 'dataTables';
-import {dataTables_buttons} from 'dataTables_buttons';
+import dataTables from 'dataTables.net';
+import dataTables_buttons from 'dataTables.net-buttons';
 import * as moment from 'moment';
 
 
@@ -55,7 +56,7 @@ class MoneyDueIn {
     activate() {
       let self:MoneyDueIn = this;
         this.isLoading(true);
-        globalui.instance.hideMenu(true);
+        controller.instance.hideMenu(true);
         this.searchText.subscribe((value)=> {
           console.log(value);
           self.table.search(value).draw();
@@ -141,9 +142,8 @@ class MoneyDueIn {
     
     public setSelectedBankStatementMode() {
       let self: MoneyDueIn = this;
-      self.selectedModeState(SelectedMode.bankStatement);
-      
       $('#upload-bank-statement-modal').modal('hide');
+      router.navigate('receiptBankStatement');
     }
 
     public selectFile() {
@@ -247,6 +247,10 @@ class MoneyDueIn {
       });
     }
 
+    
+    public goToPage(page){
+      router.navigate(page);
+    }
 
 }
 

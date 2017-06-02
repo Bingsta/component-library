@@ -1,10 +1,10 @@
 import * as ko from 'knockout';
 import * as system from 'durandal/system';
 import * as app from 'durandal/app';
-import * as globalui from 'global';
+import * as controller from 'Controller';
 import * as $ from 'jquery';
-import {dataTables} from 'dataTables';
-import {dataTables_buttons} from 'dataTables_buttons';
+import dataTables from 'dataTables.net';
+import dataTables_buttons from 'dataTables.net-buttons';
 import * as moment from 'moment';
 
 
@@ -54,11 +54,14 @@ class ReceiptBankStatement {
     public selectedModeState: KnockoutObservable<any> = ko.observable(SelectedMode.manual);
     public selectedItem: KnockoutObservable<any> = ko.observable(null);
     public processReceiptsDisabled: KnockoutComputed<boolean>;
-
+    public searchByRef: KnockoutObservable<boolean> = ko.observable(true);
+    public searchByAmount: KnockoutObservable<boolean> = ko.observable(false);
+    public searchByDate: KnockoutObservable<boolean> = ko.observable(false);
+    
     activate() {
       let self:ReceiptBankStatement = this;
         this.isLoading(true);
-        globalui.instance.hideMenu(true);
+        controller.instance.hideMenu(true);
         this.searchText.subscribe((value)=> {
           console.log(value);
           self.searchTable(value);
@@ -70,8 +73,20 @@ class ReceiptBankStatement {
         });
 
         this.processReceiptsDisabled = ko.computed(() => {
-            return this.confirmedItemCount() == 0;
+            return false;//this.confirmedItemCount() == 0;
         }, this);
+
+        this.searchByRef.subscribe((value) => {
+          self.searchForItem(self.selectedItem());
+        });
+        
+        this.searchByAmount.subscribe((value) => {
+          self.searchForItem(self.selectedItem());
+        });
+
+        this.searchByDate.subscribe((value) => {
+          self.searchForItem(self.selectedItem());
+        });
     }
 
     compositionComplete() {
@@ -222,7 +237,7 @@ class ReceiptBankStatement {
 
     public searchTable(value:string) {
         let self: ReceiptBankStatement = this;
-        self.table.search(value).draw();
+        self.table.search(`(${value})`, true).draw();
 
         //reapply ko bindings
         ko.cleanNode(document.getElementById("main-table"));
@@ -232,7 +247,21 @@ class ReceiptBankStatement {
     public searchForItem(item) {
         let self: ReceiptBankStatement = this;
         console.log("search for item");
-        self.searchText(item.matchingInvoice ? item.matchingInvoice.reference : item.reference);
+        self.searchText(self.getSearchString(item));
+    }
+
+    public getSearchString(item):string {
+      let searchStr: string = '';
+      if(this.searchByRef()) {
+        searchStr += item.reference;
+      }
+      if(this.searchByAmount()) {
+        searchStr += ((searchStr == '') ? '' : '|') + item.amount;
+      }
+      if(this.searchByDate()) {
+        searchStr += ((searchStr == '') ? '' : '|') + item.date;
+      }
+      return searchStr;
     }
 
     public selectItem(item, event){
@@ -271,9 +300,40 @@ class ReceiptBankStatement {
       //simulate server
       setTimeout(() => {
           self.receiptsProcessingState(ProcessingState.completed);
-          self.basket([]);
+          self.completeReceiptProcessing();
       }, 2000);
 
+    }
+
+    public confirmAllAutoAllocated() {
+      this.bankStatementData().forEach((item) => {
+        if(item.status() == 'auto-allocated'){
+          item.status('confirmed');
+        }
+      })
+    }
+
+    public completeReceiptProcessing(){
+      let temp:array = [];
+      this.bankStatementData().forEach((item) => {
+        //remove all confirmed items
+        if(item.status() == "confirmed"){
+          this.data.remove(item.matchingInvoice);
+          temp.push(item);
+        }
+      });
+      this.bankStatementData.removeAll(temp);
+      this.table.updateTable();
+      this.selectedItem(this.bankStatementData()[0]);
+    }
+
+    public removeItemFromList(item, list){
+      let index = list().findIndex((record) => {
+        return record == item;
+      });
+      if(index != -1) {
+        list.splice(index, 1);
+      }
     }
 
     public processReceipts() {

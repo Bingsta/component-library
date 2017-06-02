@@ -1,8 +1,9 @@
 import * as ko from 'knockout';
 import * as system from 'durandal/system';
 import * as app from 'durandal/app';
-import * as global from 'global';
-import * as moment from 'node_modules/moment/moment';
+import * as router from 'plugins/router';
+import * as controller from 'Controller';
+import * as moment from 'moment';
 
 /**
  * AccountingDashboard VM
@@ -31,7 +32,7 @@ class AccountingDashboard {
 
     activate() {
         this.isLoading(true);
-        global.instance.hideMenu(true);
+        controller.instance.hideMenu(true);
 
         this.getData('/dist/data/moneyDueInSummary.json').then((data) => {
           let totalAmount=0, totalCount=0;
@@ -61,6 +62,10 @@ class AccountingDashboard {
         });
     }
     
+    public goToPage(page){
+      router.navigate(page);
+    }
+
     public dateFormat(date: string, format: string):string{
       return moment(date, 'DD/MM/YYYY').format(format);
     }
@@ -73,6 +78,9 @@ class AccountingDashboard {
       });
     }
 
+    public showImportModal() {
+      controller.instance.showModal();
+    }
 
 }
 

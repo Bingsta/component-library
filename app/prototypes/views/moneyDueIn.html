@@ -45,35 +45,6 @@
                 <div class="app-page-list__filters grid__item">
                   <button class="btn btn-default" data-bind="click:openUploadBankStatementDialog">Upload bank statement</button>
 
-                  <!-- upload bank statement modal -->
-                  <div class="modal fade" id="upload-bank-statement-modal" tabindex="-1" role="dialog" aria-labelledby="upload">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content ">
-                        <div class="modal-header">
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                          <h4 class="modal-title" id="myModalLabel">Upload your bank statement</h4>
-                        </div>
-                        <div class="modal-body text-center">
-                          <!-- ko if: uploadFileProcessingState() == processEnum.notStarted -->
-                          <button class="btn btn-primary btn-lg" data-bind="click: selectFile">Select file</button>
-                          <!-- /ko -->
-                          <!-- ko if: uploadFileProcessingState() == processEnum.started -->
-                            uploading file...
-                          <!-- /ko -->
-                          <!-- ko if: uploadFileProcessingState() == processEnum.completed-->
-                            <div class="alert alert-success"><i class="icon-checkmark"></i> File <strong>example_bank_statement.csv</strong> uploaded</div>
-                          <!-- /ko -->
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                          <button type="button" class="btn btn-success" data-bind="css: {disabled: (uploadFileProcessingState() != processEnum.completed)}, click: setSelectedBankStatementMode">Proceed</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- /modal -->
-
-
                 </div>
                 <div class="app-page-default grid__item">
                   <button class="btn btn-default">Filters <i class="icon-plus2"></i></button>

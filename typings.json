@@ -1,15 +1,11 @@
 {
-    "resolution": {
-    "main": "typings/index"
-  },
-  "ambientDependencies": {
-    "jquery": "registry:dt/jquery#1.10.0+20170310222111"
+  "dependencies": {
+    "knockout": "registry:npm/knockout#3.4.0+20160516171930"
   },
   "globalDependencies": {
     "datatables.net": "registry:dt/datatables.net#1.10.9+20170310115247",
-    "datatables.net-buttons": "registry:dt/datatables.net-buttons#1.1.0+20170322224258"
-  },
-  "dependencies": {
-    "knockout": "registry:npm/knockout#3.4.0+20160516171930"
+    "datatables.net-buttons": "registry:dt/datatables.net-buttons#1.1.0+20170322224258",
+    "durandal": "registry:dt/durandal#2.1.0+20161128184045",
+    "jquery": "registry:dt/jquery#1.10.0+20170310222111"
   }
 }
