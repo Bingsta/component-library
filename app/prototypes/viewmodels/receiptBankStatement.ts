@@ -127,7 +127,6 @@ class ReceiptBankStatement {
                             switch(full.status) {
                                 case 'auto-allocated':
                                 return `
-                                <p>Auto-allocated to this item</p>
                                 <form class="form-inline">
                                 <button type="submit" class="btn btn-success btn-sm" data-bind="click: setStatus.bind(this, ${meta.row}, 'confirmed')">Confirm</button> <button type="submit" class="btn btn-default btn-sm" data-bind="click: setStatus.bind(this, ${meta.row}, 'unallocated')">Reallocate</button>
                                 </form>
@@ -140,7 +139,7 @@ class ReceiptBankStatement {
                             }
                         }
                         else{
-                            return 'Allocated to a different item';
+                            return 'Allocated to another item';
                         }
                     
                     }
