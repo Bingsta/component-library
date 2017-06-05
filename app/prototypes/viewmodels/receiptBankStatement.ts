@@ -1,7 +1,7 @@
 import * as ko from 'knockout';
 import * as system from 'durandal/system';
 import * as app from 'durandal/app';
-import * as controller from 'Controller';
+import * as uiController from 'UIController';
 import * as $ from 'jquery';
 import dataTables from 'dataTables.net';
 import dataTables_buttons from 'dataTables.net-buttons';
@@ -61,7 +61,7 @@ class ReceiptBankStatement {
     activate() {
       let self:ReceiptBankStatement = this;
         this.isLoading(true);
-        controller.instance.hideMenu(true);
+        uiController.instance.hideMenu(true);
         this.searchText.subscribe((value)=> {
           console.log(value);
           self.searchTable(value);
@@ -104,6 +104,47 @@ class ReceiptBankStatement {
             dom: "t",
             columns: [
                 { data: 'reference' },
+                { data: 'total' },
+                { data: 'paid' },
+                { render: function(data, type, full, meta){
+                        let selectedReference = '';
+                        
+                        if(self.selectedItem()){
+                            if(self.selectedItem().matchingInvoice){
+                                selectedReference = self.selectedItem().matchingInvoice.reference;
+                            }
+                        }
+                        console.log(selectedReference);
+                        let previouslyAllocated = false;
+
+                        self.bankStatementData().forEach(item => {
+                            if(item.matchingInvoice && item.matchingInvoice.reference == full.reference){
+                                previouslyAllocated = true;
+                            }
+                        });
+
+                        if(!previouslyAllocated || selectedReference == full.reference){
+                            switch(full.status) {
+                                case 'auto-allocated':
+                                return `
+                                <p>Auto-allocated to this item</p>
+                                <form class="form-inline">
+                                <button type="submit" class="btn btn-success btn-sm" data-bind="click: setStatus.bind(this, ${meta.row}, 'confirmed')">Confirm</button> <button type="submit" class="btn btn-default btn-sm" data-bind="click: setStatus.bind(this, ${meta.row}, 'unallocated')">Reallocate</button>
+                                </form>
+                                `;
+                                case 'confirmed':
+                                return `<span>Confirmed</span> <a data-bind="click: setStatus.bind(this, ${meta.row}, 'unallocated')">undo</a>`
+
+                                default:
+                                return `<form class="form-inline"><input type="number"  class="form-control input-sm" id="pay-input-${meta.row}" value="${(Math.round((full.total - full.paid)*100)/100)}" placeholder="Amount"> <button type="submit" class="btn btn-default btn-sm" data-bind="click: setStatus.bind(this, ${meta.row}, 'confirmed')">Allocate</button></form>`;
+                            }
+                        }
+                        else{
+                            return 'Allocated to a different item';
+                        }
+                    
+                    }
+                },
                 { data: 'owed_by', render: function(data) {
                   if(data.length > 15){
                     return `<span data-toggle="tooltip" data-placement="top" title="${data}">${data.substr(0, 10) + "..."}</span>`;
@@ -133,43 +174,6 @@ class ReceiptBankStatement {
                   }
                   return data;
                 } },
-                { data: 'total' },
-                { data: 'paid' },
-                { render: function(data, type, full, meta){
-                        let selectedReference = '';
-                        
-                        if(self.selectedItem()){
-                            if(self.selectedItem().matchingInvoice){
-                                selectedReference = self.selectedItem().matchingInvoice.reference;
-                            }
-                        }
-                        console.log(selectedReference);
-                        let previouslyAllocated = false;
-
-                        self.bankStatementData().forEach(item => {
-                            if(item.matchingInvoice && item.matchingInvoice.reference == full.reference){
-                                previouslyAllocated = true;
-                            }
-                        });
-
-                        if(!previouslyAllocated || selectedReference == full.reference){
-                            switch(full.status) {
-                                case 'auto-allocated':
-                                return `<button type="submit" class="btn btn-success btn-sm" data-bind="click: setStatus.bind(this, ${meta.row}, 'confirmed')">Confirm</button> <button type="submit" class="btn btn-default btn-sm" data-bind="click: setStatus.bind(this, ${meta.row}, 'unallocated')">Reallocate</button>`;
-
-                                case 'confirmed':
-                                return `<span>Confirmed</span> <a data-bind="click: setStatus.bind(this, ${meta.row}, 'unallocated')">undo</a>`
-
-                                default:
-                                return `<button type="submit" class="btn btn-default btn-sm" data-bind="click: setStatus.bind(this, ${meta.row}, 'confirmed')">Allocate</button>`;
-                            }
-                        }
-                        else{
-                            return 'Previously allocated';
-                        }
-                    
-                    }
-                },
                 { data: 'notes', render: function(data){
                   return data? `<span class="badge badge-accent">${data}</span>` : '';
                 } }
@@ -203,7 +207,7 @@ class ReceiptBankStatement {
 
       
     }
-    
+
     public confirmedItemCount():number {
         let count:number = 0;
 

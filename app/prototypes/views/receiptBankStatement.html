@@ -11,10 +11,9 @@
 
           <div class="app-page-masthead__titlebar"> 
             <div class="app-page-masthead__titlebar-left"> 
-              <h2 class="app-page-masthead__titlebar-title">
+              <h3 class="app-page-masthead__titlebar-title">
                 Receipting bank statement 
-                <small><i class="icon-file-text2"></i> <strong>example_bank_statement.csv</strong> imported 2nd June.</small>
-              </h2>
+              </h3>
             </div>
             <div class="app-page-masthead__titlebar-right">
               <div>
@@ -37,15 +36,163 @@
           
           <div class="app-page-list__aside list-aside grid__item">
             <div class="list-aside__header">
-              <h4>Imported statement</h4>
+              <h4><i class="icon-file-text2"></i> <strong> example_bank_statement.csv</strong></h4>
             </div>
             <div class="list-aside__items  bank-statement-items">
-              <ul class="list-group">
-                <li class="list-group-item list-group-item-warning">Auto-allocated items <button class="btn btn-xs btn-success" data-bind="click:confirmAllAutoAllocated">Confirm these receipts</button><span class="badge badge-warning">12</span></li>
-                <li class="list-group-item list-group-item-danger">Unallocated items <span class="badge">4</span></li>
-                <li class="list-group-item list-group-item-success">Confirmed items <span class="badge">12</span></li>
-              </ul>
-              <table class="table table-hover">
+              <div class="alert alert-info" role="alert">
+                <p>Imported <strong data-bind="text:bankStatementData().length"></strong> items. Click on the item below to find matching due items.</p>
+              </div>
+              <div class="panel-group" id="bankStatement-accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="headingOne"  data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h5 class="panel-title grid grid--padded-sm">
+                        <div class="grid__item--fill">Auto-allocated items</div>
+                        <div class="grid__item"><button class="btn btn-xs btn-primary pull-right" data-bind="click:confirmAllAutoAllocated, css:{disabled: bankStatementData().filter((value) => {return value.status()=='auto-allocated'}).length == 0}"><i class="icon-checkmark"></i> Confirm all</button></div>
+                        <div class="grid__item"><span class="badge badge-warning" data-bind="text:bankStatementData().filter((value) => {return value.status()=='auto-allocated'}).length"></span></div>
+                      
+                    </h5>
+                  </div>
+                  <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <table class="table table-hover">
+                      <tbody data-bind="foreach: bankStatementData().filter((value) => {return value.status()=='auto-allocated'})">
+                        <tr class="list-aside-item" data-bind="click:$parent.selectItem.bind($parent), css:{active: (reference==($parent.selectedItem() ? $parent.selectedItem().reference : ''))}">
+                          <td width="10" >
+                            <i class="icon-magic-wand"></i>
+                          </td>
+                          <td>
+                              <small>Reference</small>
+                              <div data-bind="text:reference"></div>
+                          </td>
+                          <td width="50">
+                              <small>Amount</small>
+                              <div data-bind="text:'£' + amount.toLocaleString('en-UK', {style:'currency', currency:'GBP'})"></div>
+                          </td>
+                          <td width="50">
+                              <small>Date</small>
+                              <div data-bind="text:date"></div>
+                          </td>
+                          <td width="10">
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="icon-menu3"></i></span>
+                              </button>
+                              <ul class="dropdown-menu dropdown-menu-right">
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#"><i class="icon-skull2"></i> Suspend this amount</a></li>
+                              </ul>
+                            </div>
+                          </td>
+                          <td width="10" class="table-row__selector-icon">
+                            <i class="icon-arrow-right2"></i>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="headingTwo" data-toggle="collapse" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <h5 class="panel-title  grid grid--padded-sm" >
+                      <div class="grid__item--fill"> Unallocated items</div>
+                      <div class="grid__item"><span class="badge badge-warning" data-bind="text:bankStatementData().filter((value) => {return value.status()=='unallocated'}).length"></span></div>
+                    </h5>
+                  </div>
+                  <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                      
+                    
+                    <table class="table table-hover">
+                      <tbody data-bind="foreach: bankStatementData().filter((value) => {return value.status()=='unallocated'})">
+                        <tr class="list-aside-item" data-bind="click:$parent.selectItem.bind($parent), css:{active: (reference==($parent.selectedItem() ? $parent.selectedItem().reference : ''))}">
+                          <td width="10" >
+                            <i class="icon-question"></i>
+                          </td>
+                          <td >
+                              <small>Reference</small>
+                              <div data-bind="text:reference"></div>
+                          </td>
+                          <td width="50">
+                              <small>Amount</small>
+                              <div data-bind="text:'£' + amount.toLocaleString('en-UK', {style:'currency', currency:'GBP'})"></div>
+                          </td>
+                          <td width="50">
+                              <small>Date</small>
+                              <div data-bind="text:date"></div>
+                          </td>
+                          <td width="10">
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="icon-menu3"></i></span>
+                              </button>
+                              <ul class="dropdown-menu dropdown-menu-right">
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#"><i class="icon-skull2"></i> Suspend this amount</a></li>
+                              </ul>
+                            </div>
+                          </td>
+                          <td width="10" class="table-row__selector-icon">
+                            <i class="icon-arrow-right2"></i>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="headingThree"  data-toggle="collapse" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                    <h5 class="panel-title  grid grid--padded-sm">
+                      <div class="grid__item--fill">Confirmed items</div>
+                      <div class="grid__item"><span class="badge badge-warning" data-bind="text:bankStatementData().filter((value) => {return value.status()=='confirmed'}).length"></span></div>
+                    </h5>
+                  </div>
+                  <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                      
+                    <table class="table table-hover">
+                      <tbody data-bind="foreach: bankStatementData().filter((value) => {return value.status()=='confirmed'})">
+                        <tr class="list-aside-item" data-bind="click:$parent.selectItem.bind($parent), css:{active: (reference==($parent.selectedItem() ? $parent.selectedItem().reference : ''))}">
+                          <td width="10" >
+                            <i class="icon-checkmark"></i>
+                          </td>
+                          <td>
+                              <small>Reference</small>
+                              <div data-bind="text:reference"></div>
+                          </td>
+                          <td width="50">
+                              <small>Amount</small>
+                              <div data-bind="text:'£' + amount.toLocaleString('en-UK', {style:'currency', currency:'GBP'})"></div>
+                          </td>
+                          <td width="50">
+                              <small>Date</small>
+                              <div data-bind="text:date"></div>
+                          </td>
+                          <td width="10">
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="icon-menu3"></i></span>
+                              </button>
+                              <ul class="dropdown-menu dropdown-menu-right">
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#"><i class="icon-skull2"></i> Suspend this amount</a></li>
+                              </ul>
+                            </div>
+                          </td>
+                          <td width="10" class="table-row__selector-icon">
+                            <i class="icon-arrow-right2"></i>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
+              </div>
+              <!--<table class="table table-hover">
                 <tbody data-bind="foreach: bankStatementData()">
                   <tr class="list-aside-item" data-bind="click:$parent.selectItem.bind($parent), css:{active: (reference==($parent.selectedItem() ? $parent.selectedItem().reference : '')), success: status() == 'confirmed', warning: status() == 'auto-allocated', danger: status() == 'unallocated'}">
                     <td>
@@ -58,10 +205,10 @@
                         <div class="list-lead" data-bind="text:reference"></div>
                         <div data-bind="text:date"></div>
                     </td>
-                    <!--<td><button class="btn btn-default btn-xs" data-bind="click:$parent.removeReceipt.bind($parent)">remove</button></td>-->
+                    
                   </tr>
                 </tbody>
-              </table>
+              </table>-->
               
               
                 <!-- Modal -->
@@ -118,8 +265,9 @@
             </div>
           </div>
           <div class="app-page-list__list-container">
-            <div class="app-page-list__header">
-              <h4>Matched expected items</h4>
+            <div class="app-page-list__header"  data-bind="if: selectedItem">
+              <h4><i class="icon-search"></i> Looking for item #<span data-bind="text:selectedItem().reference"></span></h4>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eveniet facere nesciunt dolor aperiam, eum neque aspernatur sit. Est expedita dolores reiciendis rerum ullam deleniti nisi voluptatem modi! Assumenda iste, iusto!</p>
               <!--<div class="well well-sm" data-bind="if: selectedItem">
                   Searching for receipt reference: <strong data-bind="text:selectedItem().reference"></strong>, 
                   Amount: £<strong data-bind="text:selectedItem().amount"></strong>,
@@ -133,7 +281,7 @@
                       <input type="search" class="form-control" id="list-search" style="width:300px" placeholder="Payment ref or amount etc." data-bind="textInput:searchText"/>
                       <span class="input-group-addon" id="basic-addon1"><i class="icon-search2"></i></span>
                     </div>
-                    <div class="btn-group" data-bind="if: selectedItem">
+                    <div class="btn-group">
                       <button type="button" class="btn btn-default" data-bind="css:{active:searchByRef}, click:function(){searchByRef(!searchByRef());}">By ref: <strong data-bind="text:selectedItem().reference"></strong></button>
                       <button type="button" class="btn btn-default" data-bind="css:{active:searchByAmount}, click:function(){searchByAmount(!searchByAmount());}">By amount: <strong data-bind="text:'£' + selectedItem().amount.toLocaleString('en-UK', {style:'currency', currency:'GBP'})"></strong></button>
                       <button type="button" class="btn btn-default" data-bind="css:{active:searchByDate}, click:function(){searchByDate(!searchByDate());}">By date: <strong data-bind="text: selectedItem().date"></strong></button>
@@ -180,24 +328,24 @@
             </div>
 
             <div class="app-page-list__list">
-              <div class="table-container"></div>
+              
               <table id="main-table" class="display dataTable table table-hover table-striped" cellspacing="0" role="grid" aria-describedby="example_info">
                 <thead>
                   <tr role="row">
-                    <th rowspan="2" class="sorting_asc" tabindex="0">Reference</th>
+                    <th rowspan="2" class="sorting_asc" tabindex="0" style="min-width:100px">Reference</th>
+                    <th rowspan="1" colspan="2">Amounts (£)</th>
+                    <th rowspan="2" class="sorting" tabindex="0" rowspan="1" colspan="1" style="min-width:250px">Allocate to item</th>
                     <th rowspan="2" class="sorting" tabindex="0" style="min-width:100px">Owed by</th>
                     <th rowspan="2" class="sorting" tabindex="0" style="min-width:50px">Type</th>
                     <th rowspan="2" class="sorting" tabindex="0" style="min-width:150px">Regarding</th>
                     <th rowspan="2" class="sorting" tabindex="0" style="min-width:70px">Due on</th>
                     <th rowspan="2" class="sorting" tabindex="0" style="min-width:100px">Pay to</th>
-                    <th rowspan="1" colspan="2">Amounts (£)</th>
-                    <th rowspan="2" class="sorting" tabindex="0" rowspan="1" colspan="1" style="min-width:200px">Allocate to item</th>
                     <th rowspan="2" class="sorting" tabindex="0" width="30" style="min-width:50px">Notes</th>
                   </tr>
                   <tr>
 
                     <th class="sorting_asc th--sub" tabindex="0" rowspan="1" colspan="1" style="min-width:50px">Total</th>
-                    <th class="sorting th--sub" tabindex="0" rowspan="1" colspan="1" style="min-width:50px">Bal</th>
+                    <th class="sorting th--sub" tabindex="0" rowspan="1" colspan="1" style="min-width:50px">Paid</th>
                   </tr>
                 </thead>
               </table>

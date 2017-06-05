@@ -261,6 +261,20 @@ body, html{
   flex-direction: row;
   align-items:center;
 }
+
+
+.grid-row.grid--padded{
+  .grid__item + .grid__item{
+    padding-top:4rem;
+  }
+}
+
+.grid-row.grid--padded-sm{
+  .grid__item + .grid__item{
+    padding-top:1rem;
+  }
+}
+
  .grid-row--fill{
 
  }
@@ -328,11 +342,12 @@ body, html{
   flex-direction: column;
   max-height:100%;
   box-sizing: border-box;
-  padding:1rem;
+  padding:1rem 2rem;
 }
 
 .list-aside__header{
-height:40px;
+  height:40px;
+  padding-right:1rem;
 }
 .list-aside__footer{
   padding:1rem;
@@ -342,6 +357,7 @@ height:40px;
 .list-aside__items{
   flex:1;
   overflow:auto;
+  padding-right:1rem;
 }
 
 .app-page-list__list-container{
@@ -353,6 +369,10 @@ height:40px;
   padding:1rem 2rem;
 }
 
+.app-page-list__list{
+  padding:1rem 2rem;
+}
+
 .list-aside-item__icon{
   cursor: pointer;
 }
@@ -361,10 +381,25 @@ height:40px;
   font-size:1.6rem;
 }
 
+.table tr > td.table-row__selector-icon {
+  color:rgba(0,0,0,0.13);
+}
+
+.table tr:hover > td.table-row__selector-icon {
+  color:rgba(0,0,0,0.85);
+}
+
+.table tr.active > td.table-row__selector-icon {
+  color:rgba(0,0,0,0.85);
+}
+
+
 .app-bankStatementReceipt{
 
     .list-aside{
+      width:25%;
       max-width:25%;
+      min-width:450px;
       tr.active td{
         font-weight:600;
       }

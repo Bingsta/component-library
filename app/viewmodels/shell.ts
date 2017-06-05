@@ -1,11 +1,11 @@
 import * as router from 'plugins/router';
 import * as app from 'durandal/app';
 import * as ko from 'knockout';
-import * as controller from 'Controller';
+import * as UIController from 'UIController';
 
 class Shell {
 public router = router;
-public controller = controller.instance;
+public uiController = UIController.instance;
 
   activate() {
     router.map([
@@ -19,7 +19,11 @@ public controller = controller.instance;
       { route: 'receiptBankStatement',            moduleId: '../prototypes/viewmodels/receiptBankStatement',          title: "Test",                  nav: false }
     ]).buildNavigationModel();
     return router.activate();
-  };
+  }
+
+  compositionComplete(){
+    this.uiController.$modal = $('#app-modal');
+  }
 
 }
 

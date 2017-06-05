@@ -2,7 +2,7 @@ import * as ko from 'knockout';
 import * as system from 'durandal/system';
 import * as app from 'durandal/app';
 import * as router from 'plugins/router';
-import * as controller from 'Controller';
+import * as uiController from 'UIController';
 import * as $ from 'jquery';
 import dataTables from 'dataTables.net';
 import dataTables_buttons from 'dataTables.net-buttons';
@@ -56,7 +56,7 @@ class MoneyDueIn {
     activate() {
       let self:MoneyDueIn = this;
         this.isLoading(true);
-        controller.instance.hideMenu(true);
+        uiController.instance.hideMenu(true);
         this.searchText.subscribe((value)=> {
           console.log(value);
           self.table.search(value).draw();

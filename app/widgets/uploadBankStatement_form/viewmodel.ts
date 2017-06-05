@@ -2,39 +2,40 @@ import * as ko from 'knockout';
 import * as system from 'durandal/system';
 import * as app from 'durandal/app';
 import * as router from 'plugins/router';
+import * as UIController from 'UIController';
 
 /**
  * UploadBankStatement_form VM
  */
 
-enum ProcessingState {
-  notStarted,
-  started,
-  completed
-}
 
 class UploadBankStatement_form {
-    public processEnum = ProcessingState;
-    public uploadFileProcessingState: KnockoutObservable<any> = ko.observable(ProcessingState.notStarted);
-    
-    activate() {
-        
+    public files: KnockoutObservableArray<any> = ko.observableArray([]);
+    public settings: any;
+    public uiController = UIController.instance;
+
+    activate(settings) {
+        this.settings = settings
+        this.files([]);
+    }
+
+    public handleFileSelect (model,event){
+      let self:UploadBankStatement_form = this;
+      console.log(event.target.files);
+      self.files(event.target.files);
     }
 
     public selectFile() {
       let self: MoneyDueIn = this;
 
-      this.uploadFileProcessingState(ProcessingState.started);
-
       //simulate server
       setTimeout(() => {
-          self.uploadFileProcessingState(ProcessingState.completed);
       }, 1000);
     }
 
     public setSelectedBankStatementMode() {
       let self: MoneyDueIn = this;
-      $('#upload-bank-statement-modal').modal('hide');
+      this.uiController.hideModal();
       router.navigate('receiptBankStatement');
     }
 }

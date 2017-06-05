@@ -2,7 +2,7 @@ import * as ko from 'knockout';
 import * as system from 'durandal/system';
 import * as app from 'durandal/app';
 import * as router from 'plugins/router';
-import * as controller from 'Controller';
+import * as UIController from 'UIController';
 import * as moment from 'moment';
 
 /**
@@ -30,10 +30,11 @@ class AccountingDashboard {
     public subAccounts = ko.observableArray();
     public systemAccounts = ko.observableArray();
 
+    public uiController = UIController.instance;
+
     activate() {
         this.isLoading(true);
-        controller.instance.hideMenu(true);
-
+        this.uiController.hideMenu(true);
         this.getData('/dist/data/moneyDueInSummary.json').then((data) => {
           let totalAmount=0, totalCount=0;
           this.moneyDueInData.items(data);
@@ -79,7 +80,7 @@ class AccountingDashboard {
     }
 
     public showImportModal() {
-      controller.instance.showModal();
+      this.uiController.showModal();
     }
 
 }

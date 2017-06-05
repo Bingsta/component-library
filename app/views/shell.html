@@ -1,5 +1,5 @@
-<div class="cl-app" data-bind="css: {'cl-app--hideMenu': controller.hideMenu}">
-  <div class="cl-display-menu" data-bind="click:controller.toogleMenu.bind(controller)"><i class="icon-menu"></i></div>
+<div class="cl-app" data-bind="css: {'cl-app--hideMenu': uiController.hideMenu}">
+  <div class="cl-display-menu" data-bind="click:uiController.toogleMenu.bind(uiController)"><i class="icon-menu"></i></div>
   <nav class="cl-menubar" role="menubar">
     <ul class="cl-menu" role="menu" data-bind="foreach:router.navigationModel">
       <li class="cl-menu__menuitem" data-bind="css:{ active: isActive }" role="menuitem"><a data-bind="text:title, attr: { href: hash }"></a></li>
@@ -15,11 +15,13 @@
     <div class="cl-main__content" data-bind="router: { transition:'entrance', cacheViews:true }"></div>
 
   </main>
-  <div class="modal fade" id="app_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document" data-bind="widget: controller.modalContentWidget">
+
+
+  <div class="modal fade" id="app-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" data-bind="widget: uiController.modalContentWidget">
+        
     </div>
   </div>
-
 
 </div>
 

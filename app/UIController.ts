@@ -1,34 +1,38 @@
 import * as ko from 'knockout';
 import * as $ from 'jquery';
 
-class Controller{
+class UIController{
 
-  private static _instance:Controller = new Controller();
+  private static _instance:UIController = new UIController();
 
   public hideMenu = ko.observable(false);
+  public $modal;
 
   public modalContentWidget:KnockoutObservable<any> = ko.observable({
     kind:'uploadBankStatement_form'
   });
 
   Constructor(){
-    if(Controller._instance){
+    if(UIController._instance){
       throw new Error("Error: Instantiation failed: Use Global.getInstance() instead of new.")
     }
-    Controller._instance = this;
+    UIController._instance = this;
   }
-  public static getInstance():Controller {
+  public static getInstance():UIController {
     return this._instance;
   }
 
   public toogleMenu() {
-    console.log(this);
     this.hideMenu(!this.hideMenu());
   }
 
   public showModal(){
-    $('app_modal').modal("show");
+    this.$modal.modal("show");
+  }
+
+  public hideModal() {
+    this.$modal.modal("hide");
   }
 };
 
-export let instance = Controller.getInstance();
+export let instance = UIController.getInstance();
