@@ -25,7 +25,7 @@ h2, .h2,
 h3, .h3 {
   margin-top: @line-height-computed;
   margin-bottom: (@line-height-computed / 2);
-  font-weight: @light;
+  font-weight: @semi-bold;
 
   small,
   .small {
@@ -78,7 +78,7 @@ p {
 // Ex: (12px small font / 14px base font) * 100% = about 85%
 small,
 .small {
-  font-size: floor((100% * @font-size-small / @font-size-base));
+  font-size: @font-size-small;
 }
 
 mark,
@@ -266,7 +266,7 @@ blockquote {
   small,
   .small {
     display: block;
-    font-size: 80%; // back to default font-size
+    font-size: @font-size-small; // back to default font-size
     line-height: @line-height-base;
     color: @blockquote-small-color;
 
@@ -303,4 +303,43 @@ address {
   margin-bottom: @line-height-computed;
   font-style: normal;
   line-height: @line-height-base;
+}
+
+
+//icon font sizes
+.icon-down-1 {
+  font-size: @icon-font-size-down-1;
+}
+.icon-up-1 {
+  font-size: @icon-font-size-up-1;
+}
+.icon-up-2 {
+  font-size: @icon-font-size-up-2;
+}
+.icon-up-3 {
+  font-size: @icon-font-size-up-3;
+}
+.icon-up-4 {
+  font-size: @icon-font-size-up-4;
+}
+.icon-up-5 {
+  font-size: @icon-font-size-up-5;
+}
+.icon-up-6 {
+  font-size: @icon-font-size-up-6;
+}
+.icon-up-7 {
+  font-size: @icon-font-size-up-7;
+}
+.icon-up-8 {
+  font-size: @icon-font-size-up-8;
+}
+.icon-up-1 {
+  font-size: @icon-font-size-up-1;
+}
+.icon-up-9 {
+  font-size: @icon-font-size-up-9;
+}
+.icon-up-10 {
+  font-size: @icon-font-size-up-10;
 }

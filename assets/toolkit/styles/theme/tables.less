@@ -65,6 +65,17 @@ th {
 }
 
 
+// truncate cells 
+.table {
+  >tbody, >thead, >tfoot {
+    >tr {
+      >td.truncate-cell, >th.truncate-cell {
+        .text-overflow();
+      } 
+    }
+  }
+}
+
 // Condensed table w/ half padding
 
 .table-condensed {
@@ -111,7 +122,7 @@ th {
 // Default zebra-stripe styles (alternating gray and transparent backgrounds)
 
 .table-striped {
-  > tbody > tr:nth-of-type(odd) {
+  > tbody > tr:nth-child(4n + 1) {
     background-color: @table-bg-accent;
   }
 }

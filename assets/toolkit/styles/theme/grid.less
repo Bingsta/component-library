@@ -82,3 +82,66 @@
 @media (min-width: @screen-lg-min) {
   .make-grid(lg);
 }
+
+
+//Custom flexbox grid
+//
+
+.grid {
+  display:flex;
+  width:100%;
+  align-items: stretch;
+}
+
+.grid-equals{
+  > .grid__item{
+    flex:1;
+  }
+}
+
+.grid--padded{
+  .grid__item + .grid__item{
+    padding-left:@padding-large-horizontal;
+  }
+}
+
+.grid--padded-sm{
+  .grid__item + .grid__item{
+    padding-left:@padding-small-horizontal;
+  }
+}
+
+.grid-row{
+  flex-direction: row;
+  align-items:center;
+}
+
+
+.grid-row.grid--padded{
+  .grid__item + .grid__item{
+    padding-top:@padding-large-vertical;
+  }
+}
+
+.grid-row.grid--padded-sm{
+  .grid__item + .grid__item{
+    padding-top:@padding-base-vertical;
+  }
+}
+
+ .grid-row--fill{
+
+ }
+.grid-row--align-right{
+  justify-content: flex-end;
+}
+.grid__item--fill {
+  flex:1;
+}
+
+.grid-item__footer, .grid-item__header {
+  padding:@padding-base-vertical 0;
+  > .grid__item + .grid__item{
+    padding-left:@padding-base-vertical;
+  }
+}

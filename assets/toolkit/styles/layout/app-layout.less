@@ -1,19 +1,63 @@
 @import "variables.less";
 @import "../theme/variables.less";
 
+@animationSpeed: 0.2s;
+
+
+
+
 @menu-color:      lighten(@brand-primary, 5%);
+
+
+
+// @masthead-base-colour: rgba(9,59,88,1);
+// @masthead-type-colour: rgba(255,255,255,0.85);
+@masthead-base-colour: #efefef;
+@masthead-type-colour: rgba(0,0,0,0.85);
+
+@masthead-base-contrast: 15;
+@masthead-base-second-contrast: @masthead-base-contrast/2;
+
+
+
+@header-height: (@font-size-small * @line-height-small + (@padding-small-vertical * 2) + 0.2);
+
+
+
+
+@page-aside-width: 24rem;
+
+
+
+
+///////////////////
+/// MAIN APP LAYOUT
+///////////////////
 
 body, html{
   height:100%;
 }
+
+// main app container
+// -----------------------------
 .app-container{
   width:100%;
   height:100%;
   box-sizing: border-box;
   display:flex;
 }
-.app-menu{
+
+//product menu
+.app-navigation{
   width:@menu-width-collapsed;
+  -webkit-transition: width @animationSpeed; /* Safari */
+  transition: width @animationSpeed;
+}
+.app-navigation--open{
+  width:@menu-width-full;
+}
+.app-menu{
+  box-sizing:border-box;
   height:100%;
   overflow-y:auto;
   overflow-x:visible;
@@ -37,6 +81,7 @@ body, html{
       color:#fff;
       border:1px dotted transparent;
       font-weight:@light;
+      padding:@padding-small-vertical 0;
   } 
   .nav-pills > li > a:hover, 
   .nav-pills > li > a:focus {
@@ -49,7 +94,38 @@ body, html{
   }
 }
 
-.app-menu-group + .app-menu-group{
+.app-menu-list__item{
+  min-width:@menu-width-full;
+
+}
+.app-menu-list-item__icon {
+  width:@menu-width-collapsed;
+  display:flex;
+  align-items:center;
+  justify-content: center;
+
+  -webkit-transition: transform @animationSpeed; /* Safari */
+  transition: transform @animationSpeed;
+}
+
+
+// app header
+.app-header{
+  width:~"calc(100% - @{menu-width-collapsed})";
+  height:@navbar-height;
+
+  position:fixed;
+  top:0;
+  left:0;
+
+  margin-left:@menu-width-collapsed;
+
+  -webkit-transition: 
+  width @animationSpeed,
+  margin @animationSpeed; /* Safari */
+  transition: 
+  width @animationSpeed,
+  margin @animationSpeed;
 }
 
 .app-brand{
@@ -68,73 +144,78 @@ body, html{
 .app-main {
   height:100%;
   width:~"calc(100% - @{menu-width-collapsed})";
+  -webkit-transition: width @animationSpeed; /* Safari */
+  transition: width @animationSpeed;
 }
 
-.app-header{
-  width:~"calc(100% - @{menu-width-collapsed})";
-  height:@navbar-height;
-
-  position:fixed;
-  top:0;
-  left:0;
-
-  margin-left:@menu-width-collapsed;
+// product menu open and close styles
+// ------------------------------------
+.app-main.app-navigation--open {
+  width:~"calc(100% - @{menu-width-full})";
+  .app-header{
+    width:~"calc(100% - @{menu-width-full})";
+    margin-left:@menu-width-full;
+  }
 }
+
+.app-menu-list-item__icon.app-navigation--open{
+  transform: rotate(-180deg);
+}
+
+
+
+// Page container
+//--------------------------------------
 
 .app-page-container {
+  box-sizing: border-box;
   margin-top:@navbar-height;
   height:~"calc(100% - @{navbar-height})";
-  overflow:auto;
 }
-
-/* Medium devices (desktops, 992px and up) */
-// @media (min-width: @screen-lg-min) { 
-//   .app-menu{
-//     width:@menu-width-full;
-//   }
-  
-//   .app-main {
-//     width:~"calc(100% - @{menu-width-full})";
-//   }
-
-//   .app-header{
-//     width:~"calc(100% - @{menu-width-full})";
-//     margin-left:@menu-width-full;
-//   }
-// }
-
-
 .app-page {
   height:100%;
   display:flex;
   flex-direction: column;
 }
 
-// @masthead-base-colour: rgba(9,59,88,1);
-// @masthead-type-colour: rgba(255,255,255,0.85);
 
-@masthead-base-colour: #cacaca;
-@masthead-type-colour: rgba(0,0,0,0.85);
-
-@masthead-base-contrast: 15;
-
-@masthead-base-second-contrast: @masthead-base-contrast/2;
-
-
-//#MASTHEAD
-.app-page-masthead__titlebar{
+/////////////////
+//# HEADER
+/////////////////
+.header {
   width:100%;
-  padding:3rem 2rem 2rem;
-
   display:flex;
-  align-items: flex-end;
+  align-items: center;
+  padding:@padding-base-vertical @padding-base-horizontal;
+  min-height:3.4rem;
+  border-bottom: 1px solid @gray-light;
+}
 
+.header__left{
+  align-items: center;
+
+  flex:1;
+}
+
+.header__right {
+  display:flex;
+  align-items: center;
+}
+
+.header__title {
+  margin:0;
+  padding:0;
+}
+
+//page masthead
+.app-page-masthead__titlebar{
+  padding: @padding-large-vertical @padding-large-horizontal;
   background-color:@masthead-base-colour;
   color:@masthead-type-colour;
 }
 .app-page-masthead__titlebar-title{
-  margin:0;
-  padding:0;
+  color:@gray-light;
+  vertical-align: middle;
 }
 .app-page-masthead__titlebar-left{
   flex:1;
@@ -155,7 +236,7 @@ body, html{
 }
 
 .app-page-masthead__tabs > .nav-tabs{
-  padding:0 2rem;
+  padding:0 @padding-base-horizontal;
   border-bottom:1px solid lighten(@masthead-base-colour, @masthead-base-contrast);
   > li {
     > a{
@@ -182,23 +263,15 @@ body, html{
 }
 }
 
-
 .app-page-masthead__content{
 
   background-color:lighten(@masthead-base-colour, @masthead-base-contrast);
   color:@masthead-type-colour;
-  padding:2rem;
+  padding:@padding-base-vertical @padding-base-horizontal;
 }
-
-
-.app-page-masthead__content-tabs-content{
-
-}
-
-
 .app-page-masthead__content-section{
   box-sizing:border-box;
-  padding:0 2rem 0 0;
+  padding:0 @padding-base-horizontal 0 0;
 
   > .section {
     >table{
@@ -206,17 +279,17 @@ body, html{
         background-color:lighten(@masthead-base-colour, @masthead-base-second-contrast);;
       }
       td{
-        padding:0.5rem 0;
+        padding:@padding-small-vertical 0;
       }
       width:100%;
       .action{
-        width:30px;
+        width:3rem;
       }
       .count{
-        width:50px;
+        width:5rem;
       }
       .amount{
-        width:100px;
+        width:10rem;
         font-weight:@semi-bold;
       }
       .total-row{
@@ -229,181 +302,136 @@ body, html{
   }
 }
 .app-page-masthead__content-section + .app-page-masthead__content-section{
-  padding-left:2rem;
+  padding-left:@padding-base-horizontal;
   padding-right:0;
 }
 
-.grid {
-  display:flex;
-  width:100%;
-  align-items: stretch;
-}
-
-.grid-equals{
-  > .grid__item{
-    flex:1;
-  }
-}
-
-.grid--padded{
-  .grid__item + .grid__item{
-    padding-left:4rem;
-  }
-}
-
-.grid--padded-sm{
-  .grid__item + .grid__item{
-    padding-left:1rem;
-  }
-}
-
-.grid-row{
-  flex-direction: row;
-  align-items:center;
-}
 
 
-.grid-row.grid--padded{
-  .grid__item + .grid__item{
-    padding-top:4rem;
-  }
-}
+////////////////////
+//#PAGE CONTAINER
+////////////////////
 
-.grid-row.grid--padded-sm{
-  .grid__item + .grid__item{
-    padding-top:1rem;
-  }
-}
-
- .grid-row--fill{
-
- }
-.grid-row--align-right{
-  justify-content: flex-end;
-}
-.grid__item--fill {
-  flex:1;
-}
-
-.grid-item__footer, .grid-item__header {
-  padding:1rem 0;
-  > .grid__item + .grid__item{
-    padding-left:1rem;
-  }
-}
-
-
-//#CONTENT
 .app-page__content{
   box-sizing:border-box;
-  padding:2rem;
+  //padding:@padding-base-vertical @padding-base-horizontal;
   flex:1;
+  display:flex;
+  box-sizing: border-box;
+  height:~"calc(100% - @{navbar-height})";
 }
 
 .app-page-content__section{
-  padding-bottom:2rem;
+  padding-bottom:@padding-large-vertical;
 }
 
-.app-page-content__section + .app-page-content__section{
+////////////////////
+//#PAGE ASIDE
+////////////////////
+
+.app-page__aside {
+
+  width:@page-aside-width;
+  max-width:@page-aside-width;
+  min-width:@page-aside-width;
+
+  border-right:2px solid @gray-dark;
+  
+
+  background-color:@gray-light;
+  color:rgba(255,255,255,0.85);
+}
+.app-page-aside__header {
+  border-bottom:1px solid @gray-dark;
+  background-color:@gray-dark;
+}
+.app-page-aside__content {
+  overflow-y: auto;
+  height:100%;
 }
 
 
-//#MONEY DUE IN LIST
 
-.app-page__list{
-  display:flex;
-  width:100%;
-  padding:0;
+
+/////////////////////
+//#PAGE MAIN CONTENT
+/////////////////////
+
+.app-page__main-content {
+  max-width:~"calc(100% - @{page-aside-width})";
+  width:~"calc(100% - @{page-aside-width})";
+  box-sizing:border-box;
 }
-.table-content{
-  width:4000px;
-  height:4000px;
+
+.app-page-main-content__header{
 }
-#main-table{
-  width:100%;
-  border-collapse: collapse !important;
-  th{
-    background-color:#ddd;
-    border:1px solid #fff;
+
+.app-page-main-content__lead-item{
+  background-color:#efefef;
+  padding:@padding-base-vertical @padding-base-horizontal;
+}
+
+
+/////////////////////////
+//#APP PAGE LIST
+/////////////////////////
+.app-page-list {
+  height:100%;
+}
+
+.app-page-list__content {
+  max-height:~"calc(100% - @{header-height})";
+  height:~"calc(100% - @{header-height})";
+  box-sizing:border-box;
+}
+
+.app-page-list-content__table {
+  //table-layout:fixed;
+
+    display:block;
+    max-width:100%;
+    width:100%;
+    height:100%;
+    max-height:100%;
+}
+
+
+.table-fixed-header {
+  >thead{
+    display:block;
+    max-width:100%;
+    overflow:hidden;
   }
-  th.th--sub{
-    background-color:#eee;
-    border:1px solid #fff;
-    font-weight:normal;
-  }
-  th, td{
-    white-space: nowrap;
+  >tbody {
+    display:block;
+    max-width:100%;
+    height:~"calc(100% - @{navbar-height})";
+    overflow: auto;
   }
 }
-.list-aside{
-  min-width:300px;
-  max-width:300px;
-  display:flex;
-  flex-direction: column;
-  max-height:100%;
-  box-sizing: border-box;
-  padding:1rem 2rem;
+
+.tr-expand-content {
+  display:none;
+  .table, th, td{
+    background-color: transparent;
+  }
+  td {
+    vertical-align: middle!important;
+  }
+  .table{
+    margin:@padding-large-vertical 0;
+  }
+  border-top: 2px solid @gray-light;
+  border-bottom: 2px solid @gray-light;
 }
 
-.list-aside__header{
-  height:40px;
-  padding-right:1rem;
-}
-.list-aside__footer{
-  padding:1rem;
-  align-items: center;
-  justify-content: flex-end;
-}
-.list-aside__items{
-  flex:1;
-  overflow:auto;
-  padding-right:1rem;
-}
-
-.app-page-list__list-container{
-  overflow: auto;
-  flex:1;
-}
-
-.app-page-list__header{
-  padding:1rem 2rem;
-}
-
-.app-page-list__list{
-  padding:1rem 2rem;
-}
-
-.list-aside-item__icon{
-  cursor: pointer;
-}
-
-.list-lead{
-  font-size:1.6rem;
-}
-
-.table tr > td.table-row__selector-icon {
-  color:rgba(0,0,0,0.13);
-}
-
-.table tr:hover > td.table-row__selector-icon {
-  color:rgba(0,0,0,0.85);
-}
-
-.table tr.active > td.table-row__selector-icon {
-  color:rgba(0,0,0,0.85);
-}
-
-
-.app-bankStatementReceipt{
-
-    .list-aside{
-      width:25%;
-      max-width:25%;
-      min-width:450px;
-      tr.active td{
-        font-weight:600;
-        color:#13547a;
+.table-fill {
+  >thead {
+    >tr {
+      display:flex;
+      >th {
+        flex:1;
       }
-    } 
-
+    }
+  }
 }

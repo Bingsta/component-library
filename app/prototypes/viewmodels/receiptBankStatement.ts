@@ -1,10 +1,8 @@
 import * as ko from 'knockout';
 import * as system from 'durandal/system';
 import * as app from 'durandal/app';
-import * as uiController from 'UIController';
+import * as UIController from 'UIController';
 import * as $ from 'jquery';
-import dataTables from 'dataTables.net';
-import dataTables_buttons from 'dataTables.net-buttons';
 import * as moment from 'moment';
 
 
@@ -43,269 +41,139 @@ enum SelectedMode {
 class ReceiptBankStatement {
     public isLoading:KnockoutObservable<boolean> = ko.observable(false);
     public table;
-    public searchText:KnockoutObservable<string> = ko.observable("");
-    public data: KnockoutObservableArray<any> = ko.observableArray([]);
-    public bankStatementData: KnockoutObservableArray<any> = ko.observableArray([]);
-    public basket: KnockoutObservableArray<Receipts> = ko.observableArray([]);
     public processEnum = ProcessingState;
     public modeEnum = SelectedMode;
     public receiptsProcessingState: KnockoutObservable<any> = ko.observable(ProcessingState.notStarted);
-    public uploadFileProcessingState: KnockoutObservable<any> = ko.observable(ProcessingState.notStarted);
-    public selectedModeState: KnockoutObservable<any> = ko.observable(SelectedMode.manual);
     public selectedItem: KnockoutObservable<any> = ko.observable(null);
     public processReceiptsDisabled: KnockoutComputed<boolean>;
-    public searchByRef: KnockoutObservable<boolean> = ko.observable(true);
-    public searchByAmount: KnockoutObservable<boolean> = ko.observable(false);
-    public searchByDate: KnockoutObservable<boolean> = ko.observable(false);
-    
+    public uiController = UIController.instance;
+
+    public appListThead = null;
+
+    public tenants: KnockoutObservableArray<any> = ko.observableArray([]);
+    public invoices: KnockoutObservableArray<any> = ko.observableArray([]);
+    public statement: KnockoutObservableArray<any> = ko.observableArray([]);
+
     activate() {
       let self:ReceiptBankStatement = this;
         this.isLoading(true);
-        uiController.instance.hideMenu(true);
-        this.searchText.subscribe((value)=> {
-          console.log(value);
-          self.searchTable(value);
-        });
-
-        this.selectedItem.subscribe((value) => {
-            self.updateTable();
-            self.searchForItem(value);
-        });
-
-        this.processReceiptsDisabled = ko.computed(() => {
-            return false;//this.confirmedItemCount() == 0;
-        }, this);
-
-        this.searchByRef.subscribe((value) => {
-          self.searchForItem(self.selectedItem());
-        });
-        
-        this.searchByAmount.subscribe((value) => {
-          self.searchForItem(self.selectedItem());
-        });
-
-        this.searchByDate.subscribe((value) => {
-          self.searchForItem(self.selectedItem());
-        });
+        this.uiController.hideMenu(true);
     }
 
     compositionComplete() {
         let self: ReceiptBankStatement = this;
-        this.getData('/dist/data/MoneyDueIn.json').then((data) => {
-          this.data(data);
-          console.log(this.data());
-          //create table
-          this.table = $("#main-table").DataTable({
-            searching :true,
-            paging :false,
-            data: this.data().filter(function(item){
-              return (Math.round((item.total - item.paid)*100)/100) > 0;
-            }),
-            dom: "t",
-            columns: [
-                { data: 'reference' },
-                { data: 'total' },
-                { data: 'paid' },
-                { render: function(data, type, full, meta){
-                        let selectedReference = '';
-                        
-                        if(self.selectedItem()){
-                            if(self.selectedItem().matchingInvoice){
-                                selectedReference = self.selectedItem().matchingInvoice.reference;
-                            }
-                        }
-                        console.log(selectedReference);
-                        let previouslyAllocated = false;
 
-                        self.bankStatementData().forEach(item => {
-                            if(item.matchingInvoice && item.matchingInvoice.reference == full.reference){
-                                previouslyAllocated = true;
-                            }
-                        });
+        this.table = $("#app-page-main-list");
 
-                        if(!previouslyAllocated || selectedReference == full.reference){
-                            switch(full.status) {
-                                case 'auto-allocated':
-                                return `
-                                <form class="form-inline">
-                                <button type="submit" class="btn btn-success btn-sm" data-bind="click: setStatus.bind(this, ${meta.row}, 'confirmed')">Confirm</button> <button type="submit" class="btn btn-default btn-sm" data-bind="click: setStatus.bind(this, ${meta.row}, 'unallocated')">Reallocate</button>
-                                </form>
-                                `;
-                                case 'confirmed':
-                                return `<span>Confirmed</span> <a data-bind="click: setStatus.bind(this, ${meta.row}, 'unallocated')">undo</a>`
+        this.appListThead = this.table.find(">thead");
 
-                                default:
-                                return `<form class="form-inline"><input type="number"  class="form-control input-sm" id="pay-input-${meta.row}" value="${(Math.round((full.total - full.paid)*100)/100)}" placeholder="Amount"> <button type="submit" class="btn btn-default btn-sm" data-bind="click: setStatus.bind(this, ${meta.row}, 'confirmed')">Allocate</button></form>`;
-                            }
-                        }
-                        else{
-                            return 'Allocated to another item';
-                        }
-                    
-                    }
-                },
-                { data: 'owed_by', render: function(data) {
-                  if(data.length > 15){
-                    return `<span data-toggle="tooltip" data-placement="top" title="${data}">${data.substr(0, 10) + "..."}</span>`;
-                  }
-                  return data;
-                } },
-                { data: 'type', render: function(data) {
-                    switch(data){
-                      case "Rent demand":
-                      return `<span class="label label-warning" data-toggle="tooltip" data-placement="top" title="${data}">RD</span>`;
-                      case "Work order":
-                      return `<span class="label label-info" data-toggle="tooltip" data-placement="top" title="${data}">WO</span>`;
-                      default:
-                        return data;
-                    }
-                } },
-                { data: 'regarding', render: function(data) {
-                  if(data.length > 20){
-                    return `<span data-toggle="tooltip" data-placement="top" title="${data}">${data.substr(0, 10) + "..."}</span>`;
-                  }
-                  return data;
-                } },
-                { data: 'due_on' },
-                { data: 'pay_to', render: function(data) {
-                  if(data.length > 15){
-                    return `<span data-toggle="tooltip" data-placement="top" title="${data}">${data.substr(0, 10) + "..."}</span>`;
-                  }
-                  return data;
-                } },
-                { data: 'notes', render: function(data){
-                  return data? `<span class="badge badge-accent">${data}</span>` : '';
-                } }
-            ]
+        //get tenants list
+        this.getData('/dist/data/tenants.json')
+        .then((tenantData) => {
+          
+          //get invoice list
+          this.getData('/dist/data/invoices.json')
+          .then((invoiceData) => {
+            
+            invoiceData.forEach((invoice) => {
+              let payer = tenantData.find((tenant) => {
+                return invoice.payer_id == tenant.id;
+              });
+              payer.invoices.push(invoice);
+              payer.balance -= invoice.total;
+              payer.balance = (Math.round(payer.balance * 100) / 100)
+            });
+
+            let filtered = tenantData.filter((tenant) => {
+              return tenant.balance > 0;
+            });
+            
+            self.tenants(tenantData.filter((tenant) => {return tenant.balance != 0;}));
+            setTimeout(() => {self.refreshTable();}, 200);
           });
-          
-          ko.applyBindings(this, document.getElementById("main-table"));
-
-          
-            this.getData('/dist/data/bankStatement.json').then((data) => {
-                data.forEach(statementItem => {
-                    let matched = false;
-                    this.data().forEach(dueItem => {
-                        if(dueItem.status != 'auto-allocated'){
-                            if(dueItem.reference == statementItem.reference){
-                                matched = true;
-                                dueItem.status = 'auto-allocated';
-                                statementItem.matchingInvoice = dueItem;
-                            }
-                            else{
-                                dueItem.status = 'unallocated';
-                            }
-                        }
-                    });
-                    statementItem.status = ko.observable(matched ? "auto-allocated" : "unallocated");
-                });
-                this.bankStatementData(data);
-                this.selectedItem(this.bankStatementData()[0]);
-            });
         });
 
+        this.getData('/dist/data/bankstatement.json').then((statementData) => {
+          this.statement(statementData);
+        });
+    }
+
+    public expandRow(item, event) {
+      let $currentRow = $(event.currentTarget).parent().next();
+      $currentRow.toggle();
       
     }
 
-    public confirmedItemCount():number {
-        let count:number = 0;
-
-        this.bankStatementData().forEach((item) => {
-            console.log("processReceiptsDisabled>>>>>>>>>>>>>>");
-            console.log(item.status());
-            if(item.status() == 'confirmed'){
-                count++;
-            }
+    public refreshTable() {
+      let self: ReceiptBankStatement = this;
+      let tHeadTHs = self.table.find(">thead>tr>th");
+      self.table.find(">tbody>tr:first-child>td").each((index, value) => {
+          $(value).width($(tHeadTHs[index]).width());
         });
-
-        return count;
     }
 
-    public setStatus(index:number, status:string, model:ReceiptBankStatement, event:JQueryEventObject) {
-        let index:number;
-        model.data()[index].status = status;
-        model.selectedItem().status(status);
-        model.selectedItem().matchingInvoice = model.data()[index];
-        console.log(model.selectedItem());
-        console.log(model.bankStatementData());
-        if(status == "confirmed"){
-            index = model.bankStatementData().findIndex((element) => {
-                return element == model.selectedItem();
-            });
-            model.selectedItem(model.bankStatementData()[index + 1]);
+    public handleTableScroll(model:ReceiptBankStatement, event: JQueryEventObject) {
+      //scroll the thead horizontaly so it appears to stick to the columns
+      model.appListThead.scrollLeft(event.currentTarget.scrollLeft);
+
+    }
+
+    public getContactPopover(data){
+      return `<div class=''>
+          <ul class='list-unstyled'>
+            <li class='media'><div class='media-left'><i class='icon-location'></i></div><div class='media-right'>${data.regarding}</div></li>
+            <li><div class='media-left'><i class='icon-phone2'></i></div><div class='media-right'><strong>Mobile</strong> - <a href='tel:094309843'>094309843</a> <br/><strong>Home</strong> - <a href='tel:98734233'>98734233</a></div></li>
+            <li><div class='media-left'><i class='icon-envelop'></i></div><div class='media-right'><a href='email:email@email.com'>email@email.com</a></div></li>
+          </ul>
+        </div>`
+    }
+
+    public getMiniStatement() {
+      return `<div class=''>
+                <table class='table table-condensed'>
+                  <tr>
+                    <td>Balance carried forward</td>
+                    <td>6th May</td>
+                    <td>0.00</td>
+                  </tr>
+                  <tr>
+                    <td>Rent payment</td>
+                    <td>11th May</td>
+                    <td>£800.00</td>
+                  </tr>
+                  <tr>
+                    <td>Landlord payment</td>
+                    <td>8th May</td>
+                    <td>(£720.00)</td>
+                  </tr>
+                  <tr>
+                    <td>Agency fees (10%)</td>
+                    <td>8th May</td>
+                    <td>(£80.00)</td>
+                  </tr>
+                  <tr>
+                    <td>Current balance</td>
+                    <td>6th June</td>
+                    <td>0.00</td>
+                  </tr>
+                </table>
+              </div>`;
+    }
+
+    public showInvoice() {
+      this.uiController.showModal({
+        kind:'invoice'
+      });
+    }
+
+    public setPopover(selector){
+      $(selector).popover({
+        container: "body",
+        html: true,
+        content: function(){
+          return `<div class="popover-content">${$(this).data("content")}</div>`;
         }
-        model.updateTable();
-        model.searchForItem(model.selectedItem());
-    }
-
-    public searchTable(value:string) {
-        let self: ReceiptBankStatement = this;
-        self.table.search(`(${value})`, true).draw();
-
-        //reapply ko bindings
-        ko.cleanNode(document.getElementById("main-table"));
-        ko.applyBindings(self, document.getElementById("main-table"));
-    }
-
-    public searchForItem(item) {
-        let self: ReceiptBankStatement = this;
-        console.log("search for item");
-        self.searchText(self.getSearchString(item));
-    }
-
-    public getSearchString(item):string {
-      let searchStr: string = '';
-      if(this.searchByRef()) {
-        searchStr += item.reference;
-      }
-      if(this.searchByAmount()) {
-        searchStr += ((searchStr == '') ? '' : '|') + item.amount;
-      }
-      if(this.searchByDate()) {
-        searchStr += ((searchStr == '') ? '' : '|') + item.date;
-      }
-      return searchStr;
-    }
-
-    public selectItem(item, event){
-        let self: ReceiptBankStatement = this;
-        self.selectedItem(item);
-    }
-
-    public setSelectedBankStatementMode() {
-      let self: ReceiptBankStatement = this;
-      self.selectedModeState(SelectedMode.bankStatement);
-      
-      $('#upload-bank-statement-modal').modal('hide');
-    }
-
-    public selectFile() {
-      let self: ReceiptBankStatement = this;
-
-      this.uploadFileProcessingState(ProcessingState.started);
-
-      //simulate server
-      setTimeout(() => {
-          self.uploadFileProcessingState(ProcessingState.completed);
-      }, 1000);
-    }
-
-    public openUploadBankStatementDialog() {
-      this.uploadFileProcessingState(ProcessingState.notStarted);
-      $('#upload-bank-statement-modal').modal('show');
-    }
-
-    public confirmProcessing() {
-      let self: ReceiptBankStatement = this;
-
-      this.receiptsProcessingState(ProcessingState.started);
-
-      //simulate server
-      setTimeout(() => {
-          self.receiptsProcessingState(ProcessingState.completed);
-          self.completeReceiptProcessing();
-      }, 2000);
-
+      });
     }
 
     public confirmAllAutoAllocated() {
@@ -352,7 +220,6 @@ class ReceiptBankStatement {
     public addReceipt(index:number, model:ReceiptBankStatement, event:JQueryEventObject) {
       let amount:number = parseFloat($(document.getElementById(`pay-input-${index}`)).val());
       let invoice = model.data()[index];
-      console.log(model.data());
 
 
       invoice.paid = (Math.round((parseFloat(invoice.paid) + amount)*100)/100);
@@ -374,31 +241,6 @@ class ReceiptBankStatement {
       self.updateTable();
     }
 
-    public updateTable(){
-      let self: ReceiptBankStatement = this;
-      //update data model - filter out row if balance paid
-      self.data(self.data().filter(function(item){
-        return (Math.round((item.total - item.paid)*100)/100) > 0;
-      }))
-      
-      self.searchText("");
-
-      //update table and data model
-      self.table.clear();
-      self.table.rows.add(self.data());
-      self.table.draw();
-
-      //reapply ko bindings
-      ko.cleanNode(document.getElementById("main-table"));
-      ko.applyBindings(self, document.getElementById("main-table"));
-    }
-
-    public searchData(model, event: JQueryEventObject) {
-      console.log(model);
-      console.log(event);
-      console.log(this);
-    }
-
     public dateFormat(date: string, format: string):string{
       return moment(date, 'DD/MM/YYYY').format(format);
     }
@@ -411,6 +253,11 @@ class ReceiptBankStatement {
       });
     }
 
+    public handleSuspenseAction() {
+      this.uiController.showModal({
+        kind: 'confirm'
+      })
+    }
 
 }
 

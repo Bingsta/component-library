@@ -80,7 +80,9 @@ class AccountingDashboard {
     }
 
     public showImportModal() {
-      this.uiController.showModal();
+      this.uiController.showModal({
+        kind:'uploadBankStatement_form'
+      });
     }
 
 }

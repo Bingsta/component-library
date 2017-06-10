@@ -33,10 +33,12 @@ class UploadBankStatement_form {
       }, 1000);
     }
 
-    public setSelectedBankStatementMode() {
+    public handleProceedClick() {
       let self: MoneyDueIn = this;
-      this.uiController.hideModal();
-      router.navigate('receiptBankStatement');
+      if(self.files().length > 0){
+        this.uiController.hideModal();
+        router.navigate('receiptBankStatement');
+      }
     }
 }
 

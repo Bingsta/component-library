@@ -2,7 +2,7 @@ import * as ko from 'knockout';
 import * as system from 'durandal/system';
 import * as app from 'durandal/app';
 import * as router from 'plugins/router';
-import * as uiController from 'UIController';
+import * as UIController from 'UIController';
 import * as $ from 'jquery';
 import dataTables from 'dataTables.net';
 import dataTables_buttons from 'dataTables.net-buttons';
@@ -52,11 +52,12 @@ class MoneyDueIn {
     public receiptsProcessingState: KnockoutObservable<any> = ko.observable(ProcessingState.notStarted);
     public uploadFileProcessingState: KnockoutObservable<any> = ko.observable(ProcessingState.notStarted);
     public selectedModeState: KnockoutObservable<any> = ko.observable(SelectedMode.manual);
+    public uiController = UIController.instance;
 
     activate() {
       let self:MoneyDueIn = this;
         this.isLoading(true);
-        uiController.instance.hideMenu(true);
+        this.uiController.hideMenu(true);
         this.searchText.subscribe((value)=> {
           console.log(value);
           self.table.search(value).draw();
@@ -139,13 +140,7 @@ class MoneyDueIn {
 
       
     }
-    
-    public setSelectedBankStatementMode() {
-      let self: MoneyDueIn = this;
-      $('#upload-bank-statement-modal').modal('hide');
-      router.navigate('receiptBankStatement');
-    }
-
+  
     public selectFile() {
       let self: MoneyDueIn = this;
 
@@ -158,8 +153,9 @@ class MoneyDueIn {
     }
 
     public openUploadBankStatementDialog() {
-      this.uploadFileProcessingState(ProcessingState.notStarted);
-      $('#upload-bank-statement-modal').modal('show');
+      this.uiController.showModal({
+        kind:'uploadBankStatement_form'
+      });
     }
 
     public confirmProcessing() {

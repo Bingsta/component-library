@@ -201,6 +201,11 @@ input[type="search"] {
     .input-group-lg & {
       line-height: @input-height-large;
     }
+
+    &.input-xs,
+    .input-group-xs & {
+      line-height:@input-height-xs;
+    }
   }
 }
 
@@ -329,6 +334,9 @@ input[type="checkbox"] {
 .input-sm {
   .input-size(@input-height-small; @padding-small-vertical; @padding-small-horizontal; @font-size-small; @line-height-small; @input-border-radius-small);
 }
+.input-xs {
+  .input-size(@input-height-xs; @padding-xs-vertical; @padding-xs-horizontal; @font-size-small; @line-height-small; @input-border-radius-small);
+}
 .form-group-sm {
   .form-control {
     height: @input-height-small;
@@ -422,6 +430,13 @@ input[type="checkbox"] {
   width: @input-height-small;
   height: @input-height-small;
   line-height: @input-height-small;
+}
+.input-xs + .form-control-feedback,
+.input-group-xs + .form-control-feedback,
+.form-group-xs .form-control + .form-control-feedback {
+  width: @input-height-xs;
+  height: @input-height-xs;
+  line-height: @input-height-xs;
 }
 
 // Feedback states

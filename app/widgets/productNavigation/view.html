@@ -1,10 +1,63 @@
-<aside class="app-navigation">
+<aside class="app-navigation " data-bind="css:{'app-navigation--open': uiController.appMenuOpen()}">
   <div class="app-brand"></div>
   <div class="app-menu">
-    <ul class="nav nav-pills nav-stacked">
-      <li role="presentation" class="active"><a href="#">Home</a></li>
-      <li role="presentation"><a href="#">Profile</a></li>
-      <li role="presentation"><a href="#">Messages</a></li>
+    <ul class="nav nav-pills nav-stacked  app-menu-list">
+      <li role="presentation" class="app-menu-list__item">
+        <a data-bind="click:handleMenuOpenClick" class="grid  app-menu-list__item">
+          <div class="grid">
+            <div class="grid__item  app-menu-list-item__icon"  data-bind="css:{'app-navigation--open': uiController.appMenuOpen()}"><i class="icon-menu7 icon-arrow-right8"></i></div>
+            <div class="grid__item grid__item--fill  app-menu-list-item__text"></div>
+          </div>
+        </a>
+      </li>
+      <li role="presentation" class="app-menu-list__item">
+        <a class="grid   app-menu-list__item">
+          <div class="grid">
+            <div class="grid__item  app-menu-list-item__icon"><i class="icon-meter"></i></div>
+            <div class="grid__item grid__item--fill  app-menu-list-item__text">home</div>
+          </div>
+        </a>
+      </li>
+      <li role="presentation">
+        <a class="grid   app-menu-list__item">
+          <div class="grid">
+            <div class="grid__item  app-menu-list-item__icon"><i class="icon-user3"></i></div>
+            <div class="grid__item grid__item--fill  app-menu-list-item__text">Landlords</div>
+          </div>
+        </a>
+      </li>
+      <li role="presentation">
+        <a class="app-menu-list__item">
+          <div class="grid">
+            <div class="grid__item  app-menu-list-item__icon"><i class="icon-user4"></i></div>
+            <div class="grid__item grid__item--fill  app-menu-list-item__text">Tenants</div>
+          </div>
+        </a>
+      </li>
+      <li role="presentation">
+        <a class="app-menu-list__item">
+          <div class="grid">
+            <div class="grid__item  app-menu-list-item__icon"><i class="icon-certificate"></i></div>
+            <div class="grid__item grid__item--fill  app-menu-list-item__text">Tenancies</div>
+          </div>
+        </a>
+      </li>
+      <li role="presentation">
+        <a class="app-menu-list__item">
+          <div class="grid">
+            <div class="grid__item  app-menu-list-item__icon"><i class="icon-hammer-wrench"></i></div>
+            <div class="grid__item grid__item--fill  app-menu-list-item__text">Maintenance</div>
+          </div>
+        </a>
+      </li>
+      <li role="presentation">
+        <a class="app-menu-list__item">
+          <div class="grid">
+            <div class="grid__item  app-menu-list-item__icon"><i class="icon-bluecollarworker"></i></div>
+            <div class="grid__item grid__item--fill  app-menu-list-item__text">Contractors</div>
+          </div>
+        </a>
+      </li>
     </ul>
   </div>
 </aside>

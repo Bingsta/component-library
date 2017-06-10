@@ -22,7 +22,12 @@ public uiController = UIController.instance;
   }
 
   compositionComplete(){
+    let self:shell = this;
     this.uiController.$modal = $('#app-modal');
+    this.uiController.$modal.on('hidden.bs.modal', (event) => {
+      self.uiController.$modal.clearWidget();
+    });
+
   }
 
 }
