@@ -44,7 +44,6 @@ class ReceiptBankStatement {
     public processEnum = ProcessingState;
     public modeEnum = SelectedMode;
     public receiptsProcessingState: KnockoutObservable<any> = ko.observable(ProcessingState.notStarted);
-    public selectedItem: KnockoutObservable<any> = ko.observable(null);
     public processReceiptsDisabled: KnockoutComputed<boolean>;
     public uiController = UIController.instance;
 
@@ -53,63 +52,152 @@ class ReceiptBankStatement {
     public tenants: KnockoutObservableArray<any> = ko.observableArray([]);
     public invoices: KnockoutObservableArray<any> = ko.observableArray([]);
     public statement: KnockoutObservableArray<any> = ko.observableArray([]);
+    public autoMatched: KnockoutObservableArray<any> = ko.observableArray([]);
+    public notMatched: KnockoutObservableArray<any> = ko.observableArray([]);
+    public confirmed: KnockoutObservableArray<any> = ko.observableArray([]);
+
+    public selectedItem: KnockoutObservable<any> = ko.observable(null);
+
+    public tenantDataSet: any;
+
+    public keyPressTimer: null;
 
     activate() {
       let self:ReceiptBankStatement = this;
-        this.isLoading(true);
-        this.uiController.hideMenu(true);
+      this.isLoading(true);
+      this.uiController.hideMenu(true);
+      
+      this.selectedItem.subscribe((newItem) => {
+        if(newItem.matchingAccount) {
+          self.tenants([newItem.matchingAccount]);
+        }
+      });
+
+      this.tenants.subscribe((newSet) => {
+
+        if(newSet.length == 1) {
+          this.tenants()[0].expanded(true);
+        }
+
+        setTimeout(() => {self.refreshTable();}, 0);
+
+      });
+      
     }
 
     compositionComplete() {
         let self: ReceiptBankStatement = this;
 
-        this.table = $("#app-page-main-list");
-
-        this.appListThead = this.table.find(">thead");
-
-        //get tenants list
-        this.getData('/dist/data/tenants.json')
-        .then((tenantData) => {
-          
-          //get invoice list
-          this.getData('/dist/data/invoices.json')
-          .then((invoiceData) => {
-            
-            invoiceData.forEach((invoice) => {
-              let payer = tenantData.find((tenant) => {
-                return invoice.payer_id == tenant.id;
-              });
-              payer.invoices.push(invoice);
-              payer.balance -= invoice.total;
-              payer.balance = (Math.round(payer.balance * 100) / 100)
-            });
-
-            let filtered = tenantData.filter((tenant) => {
-              return tenant.balance > 0;
-            });
-            
-            self.tenants(tenantData.filter((tenant) => {return tenant.balance != 0;}));
-            setTimeout(() => {self.refreshTable();}, 200);
-          });
-        });
-
+        //get bankstatement items
         this.getData('/dist/data/bankstatement.json').then((statementData) => {
-          this.statement(statementData);
+
+          //get tenants list
+          this.getData('/dist/data/tenants.json')
+          .then((tenantData) => {
+            
+            tenantData.forEach((tenant) => {
+              tenant["expanded"] = ko.observable(false);
+            } );
+
+            //get invoice list
+            this.getData('/dist/data/invoices.json')
+            .then((invoiceData) => {
+              
+              //find matching account references
+              statementData.forEach(item => {
+                let matchingAccounts = tenantData.filter((tenant) => {
+                  return tenant.reference == item.reference;
+                });
+                
+                if(matchingAccounts.length == 1) {
+                  item.matchingAccount = matchingAccounts[0];
+                  matchingAccounts[0].matchingPayments.push(matchingAccounts[0]);
+                  item.status = "auto-matched";
+                  self.autoMatched.push(item);
+                }
+                else {
+                  item.status = "not matched";
+                  self.notMatched.push(item);
+                }
+              });
+              
+              //add matching invoices to tenant list
+              invoiceData.forEach((invoice) => {
+                let payer = tenantData.find((tenant) => {
+                  return invoice.payer_id == tenant.id;
+                });
+                payer.invoices.push(invoice);
+                payer.balance -= invoice.total;
+                payer.balance = (Math.round(payer.balance * 100) / 100)
+              });
+
+              let filtered = tenantData.filter((tenant) => {
+                return tenant.balance > 0;
+              });
+              
+              //create accounts list
+              self.tenantDataSet = tenantData.filter((tenant) => {return tenant.balance != 0;});
+
+              //create statement list
+              self.statement(statementData);
+
+              self.table = $("#app-page-main-list");
+
+              self.appListThead = this.table.find(">thead");
+
+              self.selectedItem(self.statement()[0]);
+            });
+          });
+
         });
     }
 
     public expandRow(item, event) {
-      let $currentRow = $(event.currentTarget).parent().next();
-      $currentRow.toggle();
+      let self: ReceiptBankStatement = this;
+      item.expanded(!item.expanded());
       
     }
 
     public refreshTable() {
       let self: ReceiptBankStatement = this;
+      console.log("refresh table");
       let tHeadTHs = self.table.find(">thead>tr>th");
       self.table.find(">tbody>tr:first-child>td").each((index, value) => {
           $(value).width($(tHeadTHs[index]).width());
         });
+    }
+
+    public handleAllocateToAccountClick(item, event) {
+      alert("allocate to account");
+    }
+
+    public handleStatementItemClick(item, event) {
+      console.log(item);
+      this.selectedItem(item);
+    }
+
+    public handleSearchKeyUp(model, event) {
+      let value = event.currentTarget.value;
+      clearTimeout(this.keyPressTimer);
+      this.keyPressTimer = setTimeout(() => {
+        if(value.length >= 3) {
+          console.log(value);
+          this.searchAccounts(value);
+        }
+        else {
+          this.tenants(this.tenantDataSet);
+          this.refreshTable();
+        }
+      }, 500);
+    }
+
+    public searchAccounts(value) {
+      let re = new RegExp(value, 'i');
+      let filtered = this.tenantDataSet.filter((tenant) => {
+        return re.test(tenant.reference) || re.test(tenant.name) || re.test(tenant.balance);
+      });
+      this.tenants(filtered);
+      this.refreshTable();
     }
 
     public handleTableScroll(model:ReceiptBankStatement, event: JQueryEventObject) {

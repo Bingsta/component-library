@@ -200,6 +200,7 @@ body, html{
 .header__right {
   display:flex;
   align-items: center;
+  flex:1;
 }
 
 .header__title {
@@ -335,22 +336,28 @@ body, html{
   max-width:@page-aside-width;
   min-width:@page-aside-width;
 
-  border-right:2px solid @gray-dark;
+  border-right:2px solid @gray-lighter;
   
 
-  background-color:@gray-light;
-  color:rgba(255,255,255,0.85);
+  background-color:#fafafa;
+  color:@gray-light;
 }
 .app-page-aside__header {
-  border-bottom:1px solid @gray-dark;
-  background-color:@gray-dark;
+  border-bottom:1px solid @gray-lighter;
+
+  background-color:#fafafa;
 }
 .app-page-aside__content {
   overflow-y: auto;
   height:100%;
 }
 
-
+.app-page-aside__content .table tr.active{
+  td{
+    background-color:@brand-primary;
+  }
+  color:rgba(255,255,255,0.85);
+}
 
 
 /////////////////////
@@ -367,14 +374,40 @@ body, html{
 }
 
 .app-page-main-content__lead-item{
-  background-color:#efefef;
   padding:@padding-base-vertical @padding-base-horizontal;
 }
 
 
 /////////////////////////
+//#APP PAGE COMPONENT
+/////////////////////////
+.app-page-component {
+  padding:@padding-base-horizontal;
+}
+
+.app-page-component + .app-page-component {
+  padding-top:0;
+}
+
+.app-page-component__header {
+
+}
+
+.app-page-component__content {
+  background-color:#fafafa;
+}
+
+/////////////////////////
 //#APP PAGE LIST
 /////////////////////////
+.table-component{
+  height:100%;
+}
+
+.table-component__header {
+
+}
+
 .app-page-list {
   height:100%;
 }
@@ -395,7 +428,6 @@ body, html{
     max-height:100%;
 }
 
-
 .table-fixed-header {
   >thead{
     display:block;
@@ -411,7 +443,6 @@ body, html{
 }
 
 .tr-expand-content {
-  display:none;
   .table, th, td{
     background-color: transparent;
   }
