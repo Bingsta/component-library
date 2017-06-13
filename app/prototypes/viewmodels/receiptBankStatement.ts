@@ -57,24 +57,30 @@ class ReceiptBankStatement {
     public confirmed: KnockoutObservableArray<any> = ko.observableArray([]);
 
     public selectedItem: KnockoutObservable<any> = ko.observable(null);
-    public selectedIndex: KnockoutObservable<any> = ko.observable(null);
 
     public tenantDataSet: any;
 
     public keyPressTimer: null;
 
+    public searchText: KnockoutObservable<string> = ko.observable("");
+
+    public showAutoMatched: KnockoutObservable<boolean> = ko.observable(true);
+    public showUnmatched: KnockoutObservable<boolean> = ko.observable(true);
+    public showConfirmed: KnockoutObservable<boolean> = ko.observable(false);
+
     activate() {
       let self:ReceiptBankStatement = this;
       this.isLoading(true);
       this.uiController.hideMenu(true);
-      
-      this.selectedIndex.subscribe((newIndex) => {
-        self.selectedItem(self.statement()[newIndex]);
-      });
 
       this.selectedItem.subscribe((newItem) => {
         if(newItem.matchingAccount) {
+          self.searchText(newItem.reference);
           self.tenants([newItem.matchingAccount]);
+        }
+        else {
+          self.searchText(newItem.reference);
+          self.searchAccounts(newItem.reference);
         }
       });
 
@@ -83,9 +89,7 @@ class ReceiptBankStatement {
         if(newSet.length == 1) {
           this.tenants()[0].expanded(true);
         }
-
         setTimeout(() => {self.refreshTable();}, 0);
-
       });
       
     }
@@ -109,7 +113,11 @@ class ReceiptBankStatement {
             .then((invoiceData) => {
               
               //find matching account references
-              statementData.forEach(item => {
+              statementData.forEach((item, index) => {
+
+                //add an index
+                item["index"] = index;
+
                 let matchingAccounts = tenantData.filter((tenant) => {
                   return tenant.reference == item.reference;
                 });
@@ -150,11 +158,17 @@ class ReceiptBankStatement {
 
               self.appListThead = this.table.find(">thead");
 
-              self.selectedIndex(0);
+              self.selectedItem(self.statement()[0]);
             });
           });
 
         });
+    }
+
+    public openAccordianSection(model, event) {
+      let $target = $(event.currentTarget);
+      let $parent = $target.parent();
+
     }
 
     public expandRow(item, event) {
@@ -182,8 +196,8 @@ class ReceiptBankStatement {
       console.log(this.confirmed().length);
     }
 
-    public handleStatementItemClick(index, item, event) {
-      this.selectedIndex(index);
+    public handleStatementItemClick(item, event) {
+      this.selectedItem(item);
     }
 
     public handleSearchKeyUp(model, event) {
@@ -201,13 +215,24 @@ class ReceiptBankStatement {
       }, 500);
     }
 
+    public handleSearchChange(model, event) {
+    }
+
     public searchAccounts(value) {
       let re = new RegExp(value, 'i');
       let filtered = this.tenantDataSet.filter((tenant) => {
-        return re.test(tenant.reference) || re.test(tenant.name) || re.test(tenant.balance);
+        return re.test(tenant.reference) || re.test(tenant.name) || re.test(tenant.balance) || this.searchInvoices(tenant.invoices, re);
       });
+
+
       this.tenants(filtered);
       this.refreshTable();
+    }
+
+    public searchInvoices(invoices, re):boolen {
+      return (invoices.find((invoice) => {
+        return re.test(invoice.description) || re.test(invoice.amount);
+      })) != undefined;
     }
 
     public handleTableScroll(model:ReceiptBankStatement, event: JQueryEventObject) {

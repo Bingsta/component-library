@@ -348,8 +348,7 @@ body, html{
   background-color:#fafafa;
 }
 .app-page-aside__content {
-  overflow-y: auto;
-  height:100%;
+  height:~"calc(100% - 3.4rem)";
 }
 
 .app-page-aside__content .table tr.active{
@@ -468,5 +467,54 @@ body, html{
         flex:1;
       }
     }
+  }
+}
+
+
+.accordian {
+  display:flex;
+  flex-direction: column;
+  
+  margin:0;
+  padding:0;
+  height:100%;
+  box-sizing: border-box;
+  border:1px solid #a00;
+}
+
+.accordian__item {
+  display:flex;
+  flex-direction: column;
+  max-height:3.4rem;
+  min-height:3.4rem;
+  border:2px solid #0a0;
+  box-sizing: border-box;
+}
+.accordian__header {
+  display:block;
+  min-height:34px;
+  max-height:34px;
+  height:34px;
+  >div {
+    height:34px;
+  }
+}
+.accordian__body {
+  display:flex;
+  flex-direction: column;
+  overflow:hidden;
+  flex:1;
+}
+.accordian-body__inner {
+  flex:1;
+}
+
+.accordian__item--open {
+  max-height:340rem;
+  .accordian__body {
+    height:100%;
+  }
+  .accordian-body__inner {
+    overflow:auto;
   }
 }

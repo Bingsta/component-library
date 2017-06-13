@@ -50,45 +50,76 @@
               </div>
             </div>
             <div class="app-page-aside__content">
-              <table class="table">
-                <tbody data-bind="foreach:autoMatched">
-                  <tr data-bind="css:{active: $parent.selectedItem() == $data}, click:$parent.handleStatementItemClick.bind($parent, $index())">
-                    <td>
-                      <strong data-bind="text:reference"></strong><br/>
-                      <span data-bind="text:name"></span>
-                    </td>
-                    <td>
-                      <strong data-bind="text:'£' + amount"></strong><br/>
-                      <span data-bind="text:date"></span>
-                    </td>
-                    <td width="10"><span class="icon-arrow-right3"></span></td>
-                  </tr>
-                </tbody>
-              </table>
               
-              <table class="table">
-                <tbody data-bind="foreach:notMatched">
-                  <tr>
-                    <td>
-                      <strong data-bind="text:reference"></strong><br/>
-                      <span data-bind="text:name"></span>
-                    </td>
-                    <td>
-                      <strong data-bind="text:'£' + amount"></strong><br/>
-                      <span data-bind="text:date"></span>
-                    </td>
-                    <td width="10"><span class="icon-arrow-right3"></span></td>
-                  </tr>
-                </tbody>
-              </table>
+              <ul class="accordian">
+                <li class="accordian__item" data-bind="css:{'accordian__item--open': showUnmatched}">
+                  <a class="accordian__header">Unmatched items</a>
+                  <div class="accordian__body">
+                    <div class="accordian-body__inner">
+                      <table class="table">
+                        <tbody data-bind="foreach:notMatched">
+                          <tr data-bind="css:{active: $parent.selectedItem() == $data}, click:$parent.handleStatementItemClick.bind($parent), template:{ name: 'payment-template', data: $data }">
+                            
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </li>
+                <li class="accordian__item" data-bind="css:{'accordian__item--open': showAutoMatched}">
+                  <a class="accordian__header">Auto matched items</a>
+                  <div class="accordian__body">
+                    <div class="accordian-body__inner">
+                      <table class="table">
+                        <tbody data-bind="foreach:autoMatched">
+                          <tr data-bind="css:{active: $parent.selectedItem() == $data}, click:$parent.handleStatementItemClick.bind($parent), template:{ name: 'payment-template', data: $data }">
+                            
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </li>
+                <li class="accordian__item" data-bind="css:{'accordian__item--open': showConfirmed}">
+                  <a class="accordian__header" data-bind="click:openAccordianSection">Confirmed items</a>
+                  <div class="accordian__body">
+                    <div class="accordian-body__inner">
+                      <table class="table">
+                        <tbody data-bind="foreach:confirmed">
+                          <tr data-bind="css:{active: $parent.selectedItem() == $data}, click:$parent.handleStatementItemClick.bind($parent), template:{ name: 'payment-template', data: $data }">
+                            
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                  </div>
+                </li>
+              </ul>
+              
+              
             </div>
+
+            <script type="text/html" id="payment-template">
+
+                <td>
+                  <strong data-bind="text:reference"></strong><br/>
+                  <span data-bind="text:name"></span>
+                </td>
+                <td>
+                  <strong data-bind="text:'£' + amount"></strong><br/>
+                  <span data-bind="text:date"></span>
+                </td>
+                <td width="10"><span class="icon-arrow-right3"></span></td>
+
+            </script>
           </aside>
 
           <div class="app-page__main-content  app-page-list" >
             <div class="app-page-component" data-bind="if:selectedItem()">
               <div class="app-page-component__header  header">
                 <div class="header__left">
-                  <h4>Showing receipt <span data-bind="text:(selectedIndex() + 1)"></span> of <span data-bind="text:statement().length"></span></h4>
+                  <h4>Showing receipt <span data-bind="text:(selectedItem().index + 1)"></span> of <span data-bind="text:statement().length"></span></h4>
                 </div>
                 <div class="header__right grid grid--padded-sm grid-row--align-right">
                   <div class="grid__item">
@@ -131,7 +162,7 @@
                   <div class="table-component-header__right  header__right  grid  grid--padded-sm  grid-row--align-right">
                     <form class="form-inline form-group-sm  grid__item">
                       <div class="input-group">
-                        <input class="form-control" type="search" placeholder="Search for payment..."  data-bind="event:{'keyup': handleSearchKeyUp}">
+                        <input class="form-control" type="search" placeholder="Search for payment..."  data-bind="value: searchText(), event:{'keyup': handleSearchKeyUp, input: handleSearchChange}">
                         <div class="input-group-addon"><i class="icon-search"></i></div>
                       </div>
                     </form>
