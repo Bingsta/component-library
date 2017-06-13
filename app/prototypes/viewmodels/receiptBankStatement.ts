@@ -57,6 +57,7 @@ class ReceiptBankStatement {
     public confirmed: KnockoutObservableArray<any> = ko.observableArray([]);
 
     public selectedItem: KnockoutObservable<any> = ko.observable(null);
+    public selectedIndex: KnockoutObservable<any> = ko.observable(null);
 
     public tenantDataSet: any;
 
@@ -67,6 +68,10 @@ class ReceiptBankStatement {
       this.isLoading(true);
       this.uiController.hideMenu(true);
       
+      this.selectedIndex.subscribe((newIndex) => {
+        self.selectedItem(self.statement()[newIndex]);
+      });
+
       this.selectedItem.subscribe((newItem) => {
         if(newItem.matchingAccount) {
           self.tenants([newItem.matchingAccount]);
@@ -145,7 +150,7 @@ class ReceiptBankStatement {
 
               self.appListThead = this.table.find(">thead");
 
-              self.selectedItem(self.statement()[0]);
+              self.selectedIndex(0);
             });
           });
 
@@ -168,12 +173,17 @@ class ReceiptBankStatement {
     }
 
     public handleAllocateToAccountClick(item, event) {
-      alert("allocate to account");
+      console.log(item);
+      console.log(this.autoMatched().length);
+      item.status = "confirmed";
+      this.autoMatched.remove(this.selectedItem());
+      this.confirmed.push(this.selectedItem());
+      console.log(this.autoMatched().length);
+      console.log(this.confirmed().length);
     }
 
-    public handleStatementItemClick(item, event) {
-      console.log(item);
-      this.selectedItem(item);
+    public handleStatementItemClick(index, item, event) {
+      this.selectedIndex(index);
     }
 
     public handleSearchKeyUp(model, event) {
