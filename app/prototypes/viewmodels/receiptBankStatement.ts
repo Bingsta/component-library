@@ -65,7 +65,7 @@ class ReceiptBankStatement {
     public searchText: KnockoutObservable<string> = ko.observable("");
 
     public showAutoMatched: KnockoutObservable<boolean> = ko.observable(true);
-    public showUnmatched: KnockoutObservable<boolean> = ko.observable(true);
+    public showUnmatched: KnockoutObservable<boolean> = ko.observable(false);
     public showConfirmed: KnockoutObservable<boolean> = ko.observable(false);
 
     activate() {
@@ -165,10 +165,15 @@ class ReceiptBankStatement {
         });
     }
 
-    public openAccordianSection(model, event) {
-      let $target = $(event.currentTarget);
-      let $parent = $target.parent();
-
+    public openAccordianSection(section, model, event) {
+      model.showAutoMatched(false);
+      model.showUnmatched(false);
+      model.showConfirmed(false);
+      section(!section());
+      console.log(this);
+      console.log(model);
+      console.log(event);
+      console.log(section);
     }
 
     public expandRow(item, event) {
@@ -187,13 +192,11 @@ class ReceiptBankStatement {
     }
 
     public handleAllocateToAccountClick(item, event) {
-      console.log(item);
-      console.log(this.autoMatched().length);
       item.status = "confirmed";
       this.autoMatched.remove(this.selectedItem());
       this.confirmed.push(this.selectedItem());
-      console.log(this.autoMatched().length);
-      console.log(this.confirmed().length);
+      console.log(this.selectedItem().index);
+      this.selectedItem(this.statement()[this.selectedItem().index + 1]);
     }
 
     public handleStatementItemClick(item, event) {

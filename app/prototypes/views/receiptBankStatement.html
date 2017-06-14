@@ -42,32 +42,24 @@
         <div class="app-page__content">
           
           <aside class="app-page__aside">
-            <div class="app-page-aside__header  header">
+            <!--<div class="app-page-aside__header  header">
               <div class="header__left">
                 <h4 class="app-page-aside-header__title  header__title">
                   Bank statement items
                 </h4>
               </div>
-            </div>
+            </div>-->
             <div class="app-page-aside__content">
               
               <ul class="accordian">
-                <li class="accordian__item" data-bind="css:{'accordian__item--open': showUnmatched}">
-                  <a class="accordian__header">Unmatched items</a>
-                  <div class="accordian__body">
-                    <div class="accordian-body__inner">
-                      <table class="table">
-                        <tbody data-bind="foreach:notMatched">
-                          <tr data-bind="css:{active: $parent.selectedItem() == $data}, click:$parent.handleStatementItemClick.bind($parent), template:{ name: 'payment-template', data: $data }">
-                            
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </li>
                 <li class="accordian__item" data-bind="css:{'accordian__item--open': showAutoMatched}">
-                  <a class="accordian__header">Auto matched items</a>
+                  <div class="accordian__header  grid"  data-bind="click:openAccordianSection.bind(null, showAutoMatched)">
+                    <div class="accordian-header__icon  grid__item"><i class="icon-arrow-right3"></i></div>
+                    <div class="accordian-header__title  grid__item  grid__item--fill">Auto matched items <span class="badge badge-accent" data-bind="text:autoMatched().length"></span></div>
+                  </div>
+                  <div class="accordian__footer grid  grid-row--align-right" data-bind="visible: autoMatched().length > 0">
+                    <button class="btn btn-sm btn-success btn-block">Confirm all auto-matched</button>
+                  </div>
                   <div class="accordian__body">
                     <div class="accordian-body__inner">
                       <table class="table">
@@ -80,8 +72,29 @@
                     </div>
                   </div>
                 </li>
+                <li class="accordian__item" data-bind="css:{'accordian__item--open': showUnmatched}">
+                  <div class="accordian__header  grid "  data-bind="click:openAccordianSection.bind(null, showUnmatched)">
+                    <div class="accordian-header__icon  grid__item"><i class="icon-arrow-right3"></i></div>
+                    <div class="accordian-header__title  grid__item  grid__item--fill">Unmatched items <span class="badge badge-accent" data-bind="text:notMatched().length"></span></div>
+                  </div>
+                  <div class="accordian__body">
+                    <div class="accordian-body__inner">
+                      <table class="table">
+                        <tbody data-bind="foreach:notMatched">
+                          <tr data-bind="css:{active: $parent.selectedItem() == $data}, click:$parent.handleStatementItemClick.bind($parent), template:{ name: 'payment-template', data: $data }">
+                            
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </li>
                 <li class="accordian__item" data-bind="css:{'accordian__item--open': showConfirmed}">
-                  <a class="accordian__header" data-bind="click:openAccordianSection">Confirmed items</a>
+                  <div class="accordian__header  grid"  data-bind="click:openAccordianSection.bind(null, showConfirmed)">
+                    
+                    <div class="accordian-header__icon  grid__item"><i class="icon-arrow-right3"></i></div>
+                    <div class="accordian-header__title  grid__item  grid__item--fill">Confirmed items <span class="badge badge-accent" data-bind="text:confirmed().length"></span></div>
+                  </div>
                   <div class="accordian__body">
                     <div class="accordian-body__inner">
                       <table class="table">
@@ -97,6 +110,14 @@
                 </li>
               </ul>
               
+              <div class="app-page-aside__footer  grid grid--padded-sm grid-row--align-right grid-row--center">
+                <div class="grid__item">
+                  <button class="btn btn-default">Save</button>
+                </div>
+                <div class="grid__item">
+                  <button class="btn btn-success">Process receipts</button>
+                </div>
+              </div>
               
             </div>
 
@@ -110,7 +131,7 @@
                   <strong data-bind="text:'£' + amount"></strong><br/>
                   <span data-bind="text:date"></span>
                 </td>
-                <td width="10"><span class="icon-arrow-right3"></span></td>
+                <td width="10" class="indicator"><span class="icon-arrow-right3"></span></td>
 
             </script>
           </aside>

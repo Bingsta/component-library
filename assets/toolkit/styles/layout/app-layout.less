@@ -348,14 +348,36 @@ body, html{
   background-color:#fafafa;
 }
 .app-page-aside__content {
-  height:~"calc(100% - 3.4rem)";
+  height:100%;
+}
+
+@app-aside-footer-height: 5rem;
+
+.app-page-aside__footer {
+  height:@app-aside-footer-height;
+  border-top:1px solid @gray-lighter;
+}
+
+.app-page-aside__content .table tr:hover{
+  background-color:lighten(@brand-primary, 68%);
+  .indicator{
+    opacity:0.5;
+  }
+}
+
+.app-page-aside__content .table .indicator{
+  opacity:0.2;
+  transition: opacity @animationSpeed ease;
 }
 
 .app-page-aside__content .table tr.active{
   td{
-    background-color:@brand-primary;
+  background-color:lighten(@brand-primary, 62%);
   }
-  color:rgba(255,255,255,0.85);
+  .indicator{
+    opacity:1;
+  }
+  
 }
 
 
@@ -477,9 +499,8 @@ body, html{
   
   margin:0;
   padding:0;
-  height:100%;
+  height:~"calc(100% - @{app-aside-footer-height})";
   box-sizing: border-box;
-  border:1px solid #a00;
 }
 
 .accordian__item {
@@ -487,18 +508,49 @@ body, html{
   flex-direction: column;
   max-height:3.4rem;
   min-height:3.4rem;
-  border:2px solid #0a0;
   box-sizing: border-box;
+  border:1px solid rgba(255,255,255,0.13);
+  transition: max-height 0.25s ease-in-out, min-height 0.25s ease-in-out;
 }
 .accordian__header {
-  display:block;
-  min-height:34px;
-  max-height:34px;
-  height:34px;
-  >div {
-    height:34px;
+  min-height:3.4rem;
+  max-height:3.4rem;
+  height:3.4rem;
+  background-color:#e7e7e7;
+}
+.accordian__header:hover {
+  background-color:darken(#e7e7e7, 5%);
+  
+    .accordian-header__icon i {
+      transform:rotate(45deg);
+    }
+}
+.accordian-header__icon {
+  width:3rem;
+  height:3.4rem;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  i{
+      transform:rotate(0deg);
+      transition: transform @animationSpeed ease;
   }
 }
+.accordian-header__title {
+  display:flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size:@icon-font-size-up-1;
+  font-weight:@semi-bold;
+
+}
+
+.accordian__footer {
+  min-height:3.4rem;
+  background-color:rgba(0,0,0,0.13);
+  padding:@padding-small-vertical @padding-small-horizontal;
+}
+
 .accordian__body {
   display:flex;
   flex-direction: column;
@@ -516,5 +568,19 @@ body, html{
   }
   .accordian-body__inner {
     overflow:auto;
+  }
+  
+  .accordian__header {
+    background-color:@brand-primary;
+   color:rgba(255,255,255,0.85);;
+  }
+  .accordian__header:hover {
+    background-color:lighten(@brand-primary, 5%);
+    .accordian-header__icon i {
+      transform: rotate(90deg);
+    }
+  }
+  .accordian-header__icon i {
+    transform: rotate(90deg);
   }
 }
