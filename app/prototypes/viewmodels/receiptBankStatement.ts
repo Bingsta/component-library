@@ -73,7 +73,14 @@ class ReceiptBankStatement {
       this.isLoading(true);
       this.uiController.hideMenu(true);
 
+      $(window).resize(() => {
+        self.refreshTable();
+      });
+
       this.selectedItem.subscribe((newItem) => {
+        self.tenants().forEach((item) => {
+          item.expanded(false);
+        });
         if(newItem.matchingAccount) {
           self.searchText(newItem.reference);
           self.tenants([newItem.matchingAccount]);
@@ -82,6 +89,7 @@ class ReceiptBankStatement {
           self.searchText(newItem.reference);
           self.searchAccounts(newItem.reference);
         }
+        self.refreshTable()
       });
 
       this.tenants.subscribe((newSet) => {
@@ -124,7 +132,7 @@ class ReceiptBankStatement {
                 
                 if(matchingAccounts.length == 1) {
                   item.matchingAccount = matchingAccounts[0];
-                  matchingAccounts[0].matchingPayments.push(matchingAccounts[0]);
+                  matchingAccounts[0].matchingPayments.push(item);
                   item.status = "auto-matched";
                   self.autoMatched.push(item);
                 }
@@ -186,9 +194,60 @@ class ReceiptBankStatement {
       let self: ReceiptBankStatement = this;
       console.log("refresh table");
       let tHeadTHs = self.table.find(">thead>tr>th");
-      self.table.find(">tbody>tr:first-child>td").each((index, value) => {
+      self.table.find(">tbody:not('.blank-state')>tr:first-child>td").each((index, value) => {
           $(value).css({minWidth : $(tHeadTHs[index]).outerWidth()});
         });
+    }
+
+    public handleUnmatchItemsClick(item, click) {
+      let self:receiptsProcessingState = this;
+      let paymentIndex = item.matchingPayments.findIndex(
+        (payment) => {
+          return payment == self.selectedItem();
+        }
+      );
+      //unmatch account
+      if(paymentIndex >= 0){
+        item.matchingPayments.splice(paymentIndex,1);
+      }
+      console.log(item);
+      item.status = "not matched";
+
+      //unmatch payment
+      this.selectedItem().matchingAccount == null;
+      this.selectedItem().status = "not matched";
+
+      this.autoMatched.remove(this.selectedItem());
+      this.notMatched.push(this.selectedItem());
+
+      this.selectSectionIndex(this.notMatched, this.notMatched().length-1, $("#statement-group-notMatched .accordian-body__inner"), this.showUnmatched);
+
+
+    } 
+
+    public handleUndoClick(item, event) {
+      
+      let self:receiptsProcessingState = this;
+      let paymentIndex = item.matchingPayments.findIndex(
+        (payment) => {
+          return payment == self.selectedItem();
+        }
+      );
+      //unmatch account
+      if(paymentIndex >= 0){
+        item.matchingPayments.splice(paymentIndex,1);
+      }
+      console.log(item);
+      item.status = "not matched";
+      
+      //unmatch payment
+      this.selectedItem().matchingAccount == null;
+      this.selectedItem().status = "not matched";
+      
+      this.confirmed.remove(this.selectedItem());
+      this.notMatched.push(this.selectedItem());
+
+      this.selectSectionIndex(this.notMatched, this.notMatched().length-1, $("#statement-group-notMatched .accordian-body__inner"), this.showUnmatched);
     }
 
     public handleAllocateToAccountClick(item, event) {
@@ -501,6 +560,7 @@ class ReceiptBankStatement {
       let temp;
       let confirmed = ko.observable();
 
+      //subscribe to modal success observable
       confirmed.subscribe((confirmedDecision) => {
         if(confirmedDecision) {
              self.autoMatched().forEach((item) => {
@@ -514,6 +574,13 @@ class ReceiptBankStatement {
                 return item.status == "confirmed";
               }
             );
+
+            if(this.selectSectionIndex(this.notMatched, 0, $("#statement-group-notMatched .accordian-body__inner"), this.showUnmatched)) {
+              
+            }
+            else {
+              this.selectSectionIndex(this.confirmed, 0, $("#statement-group-confirmed .accordian-body__inner"), this.showConfirmed);
+            }
         }
       });
 

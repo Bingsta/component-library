@@ -15,9 +15,9 @@
 
           <div class="app-page-masthead__titlebar  header"> 
             <div class="app-page-masthead__titlebar-left  header__left"> 
-              <h3 class="app-page-masthead__titlebar-title  header__title">
+              <h2 class="app-page-masthead__titlebar-title  header__title">
                 <small><a href="#accountingDashboard"><i class="icon-meter"></i></a> <i class="icon-arrow-right3"></i> </small>  Receipt bank statement 
-              </h3>
+              </h2>
             </div>
             <div class="app-page-masthead__titlebar-right  header__right grid grid-row--align-right">
               <div>
@@ -91,7 +91,7 @@
                 <div class="accordian-body__inner">
                   <table class="table">
                     <tbody data-bind="foreach:items">
-                      <tr data-bind="css:{active: $parents[1].selectedItem() == $data}, click:$parents[1].handleStatementItemClick.bind($parents[1]), template:{ name: 'payment-template', data: $data }">
+                      <tr data-bind="css:{active: $parents[1].selectedItem() == $data, 'border-left-warning': status == 'auto-matched', 'border-left-danger': status == 'not matched', 'border-left-success': status == 'confirmed'}, click:$parents[1].handleStatementItemClick.bind($parents[1]), template:{ name: 'payment-template', data: $data }">
                         
                       </tr>
                     </tbody>
@@ -118,8 +118,40 @@
           <div class="app-page__main-content  app-page-list   app-page__content--vertical-layout" >
             <div class="app-page-component" data-bind="if:selectedItem()">
               <div class="app-page-component__header  header">
-                <div class="header__left">
-                  <h4>Showing receipt <span data-bind="text:(selectedItem().index + 1)"></span> of <span data-bind="text:statement().length"></span></h4>
+                <div class="header__left grid grid--padded">
+                  <!-- ko if:selectedItem().status == 'auto-matched' -->
+                      <div class="grid__item">
+                        <span class="label label-warning">Auto matched</span>
+                      </div>
+
+                      <div class="grid__item  grid__item--fill">
+                          <h4>This payment has been automatically matched to the account below. Confirm this match or unmatch it.</h4>
+                      </div>
+                    <!-- /ko -->
+
+                    
+                    <!-- ko if:selectedItem().status == 'not matched' -->
+                      <div class="grid__item">
+                        <span class="label label-danger">Not matched</span>
+                      </div>
+
+                      <div class="grid__item  grid__item--fill">
+                          <h4>We have been unable to find a matching account. Please use the search below to find the correct account.</h4>
+                      </div>
+                    <!-- /ko -->
+
+
+                    <!-- ko if:selectedItem().status == 'confirmed' -->
+                      <div class="grid__item">
+                        <span class="label label-success">Confirmed</span>
+                      </div>
+
+                      <div class="grid__item  grid__item--fill">
+                        <h4>This payment has been allocated to the account below.</h4>
+                      </div>
+                    <!-- /ko -->
+
+                  <!--<h4>Showing receipt <span data-bind="text:(selectedItem().index + 1)"></span> of <span data-bind="text:statement().length"></span></h4>-->
                 </div>
                 <div class="header__right grid grid--padded-sm grid-row--align-right">
                   <div class="grid__item">
@@ -132,47 +164,60 @@
               </div>
               <div class="app-page-component__body">
 
-                <div class="well well-sm  grid  grid--padded">
+                <div class="well well-sm grid grid--column grid--padded">
                   
-                  <div class="grid__item">
-                    <span class="label label-warning" data-bind="text:selectedItem().status"></span>
+                  <div class="grid  grid--padded  grid__item">
+                    <div class="grid__item">
+                      <dl class="dl-horizontal">
+                        <dt>Payment ref:</dt>
+                        <dd data-bind="text:selectedItem().reference"><dd>
+                        <dt>Name:</dt>
+                        <dd data-bind="text:selectedItem().name"><dd>
+                      </dl>
+                    </div>
+                    <div class="grid__item ">
+                      <dl class="dl-horizontal">
+                        <dt>Date received:</dt>
+                        <dd data-bind="text:selectedItem().date"><dd>
+                        <dt>Amount received:</dt>
+                        <dd data-bind="text:selectedItem().amount"><dd>
+                      </dl>
+                    </div>
                   </div>
-                  <div class="grid__item  grid__item--fill">
-                    <dl class="dl-horizontal">
-                      <dt>Payment ref:</dt>
-                      <dd data-bind="text:selectedItem().reference"><dd>
-                      <dt>Name:</dt>
-                      <dd data-bind="text:selectedItem().name"><dd>
-                    </dl>
+
+                  <!-- ko if:selectedItem().status == 'not matched' -->
+                  <div class="grid__item grid grid--padded grid-row--center">
+                    <div class="grid__item ">
+                        <div class="text-danger">
+                          <i class="icon-warning"></i> If you are unable to identify the correct account please add the payment to you suspense account. 
+                        </div>
+                    </div>
+                    <div class="grid__item">
+                      <button class="btn btn-danger btn-sm"><i class="icon-skull"></i> Suspend funds</button>
+                    </div>
+                    
                   </div>
-                  <div class="grid__item  grid__item--fill">
-                    <dl class="dl-horizontal">
-                      <dt>Date received:</dt>
-                      <dd data-bind="text:selectedItem().date"><dd>
-                      <dt>Amount received:</dt>
-                      <dd data-bind="text:selectedItem().amount"><dd>
-                    </dl>
-                  </div>
+                  <!-- /ko -->
+
                 </div>
-                
               </div>
             </div>
               
               <div class="app-page-component  table-component">
               
-                <div class="table-component__header  header">
+                <div class="table-component__header  app-page-component__header  header">
                   <div class="table-component-header__left  header__left  ">
                     <h4 class="table-component-header__title  header__title">
                       <!-- ko if:selectedItem() && selectedItem().status == 'auto-matched' -->
-                        Matched account...
+                        Matched account
                       <!-- /ko -->
 
                       <!-- ko if:selectedItem() && selectedItem().status == 'not matched' -->
-                        No
+                        Search for an account
                       <!-- /ko -->
 
-                      <!-- ko if:selectedItem() && selectedItem().status == 'auto-matched' -->
-
+                      <!-- ko if:selectedItem() && selectedItem().status == 'confirmed' -->
+                        Matched account
                       <!-- /ko -->
                     </h4>
                   </div>
@@ -189,7 +234,7 @@
                   </div>
                 </div>
 
-                <table id="app-page-main-list" class="app-page-list-content__table  table  table-striped table-expandable  table-fixed-header  table-fill ">
+                <table id="app-page-main-list" class="app-page-list-content__table  table  table-striped table-expandable  table-fixed-header  table-fill "  data-bind="css:{'blank-state': tenants().length == 0}">
                   <thead>
                     <tr>
                       <th style="max-width:3rem"></th>
@@ -211,13 +256,14 @@
                     </tr>
                     <tr class="tr-expand-content" data-bind="visible: expanded()">
                       <td colspan="5">
+                        
                         <!-- ko if: invoices.length > 0 -->
                           <table style="margin-left:3rem" class="table table-condensed">
                             <thead>
                               <tr>
                                 <th style="width:30rem">Item</th>
                                 <th style="width:30rem">Owed from</th>
-                                <th style="width:30rem">Amounts</th>
+                                <th style="width:30rem">Amounts (£)</th>
                                 <th style="width:15rem">Pay</th>
                                 <th></th>
                               </tr>
@@ -233,9 +279,9 @@
                                   <span class="label label-warning">Due now!</span>
                                 </td>
                                 <td data-bind="text: (-total)"></td>
-                                <td><input type="input" class="form-control" placeholder="Pay amount" data-bind="value:total" /></td>
+                                <td><input type="input" class="form-control input-sm" placeholder="Pay amount" data-bind="value:total" /></td>
                                 <!--<td><label><input checked="checked" type="checkbox" class=""> Pay this</label></td>-->
-                                <td><button class="btn btn-xs btn-default"><span class="icon-pencil"></span> edit amount</button></td>
+                                <!--<td><button class="btn btn-sm btn-default"><span class="icon-pencil"></span> edit amount</button></td>-->
                               </tr>
                             </tbody>
                             <tfoot>
@@ -243,13 +289,13 @@
                                 <th colspan="2">Balance brought forward</th>
                                 <th colspan="3">0.00</th>
                               </tr>
-                              <tr>
+                              <!--<tr>
                                 <th colspan="2">Account balance</th>
                                 <th colspan="3" data-bind="text:(balance)">0.00</th>
-                              </tr>
+                              </tr>-->
                               <tr>
                                 <th colspan="2">Amount received in payment</th>
-                                <th colspan="3" data-bind="text:(-$parent.selectedItem().amount)"></th>
+                                <th colspan="3" data-bind="text:($parent.selectedItem().amount)"></th>
                               </tr>
                               <tr class="warning">
                                 <th colspan="2">New balance</th>
@@ -257,11 +303,30 @@
                               </tr>
                               <tr>
                                 <th colspan="2"></th>
-                                <th colspan="2"><button type="submit" class="btn btn-default btn-success" data-bind="click:$parent.handleAllocateToAccountClick.bind($parent)">Allocate to this account</button></th>
+                                <th colspan="2">
+                                  <!-- ko if:$parent.selectedItem() && ($parent.selectedItem().status == "auto-matched") -->
+                                  <div class="grid grid--padded-sm">
+                                    <div class="grid__item">
+                                      <button type="submit" class="btn btn-default btn-success" data-bind="click:$parent.handleAllocateToAccountClick.bind($parent)"><i class="icon-checkmark"></i> Confirm match</button> 
+                                    </div>
+                                    <div class="grid__item">
+                                      <button class="btn btn-default" data-bind="click:$parent.handleUnmatchItemsClick.bind($parent)"><i class="icon-cross"></i> Unmatch these items</button>
+                                    </div>
+                                  </div>
+                                  <!-- /ko -->
+
+                                  <!-- ko if:$parent.selectedItem() && ($parent.selectedItem().status == "not matched") -->
+                                  <button type="submit" class="btn btn-default btn-success" data-bind="click:$parent.handleAllocateToAccountClick.bind($parent)"><i class="icon-checkmark"></i> Allocate to this account</button>
+                                  <!-- /ko -->
+
+                                  
+                                  <!-- ko if:$parent.selectedItem() && ($parent.selectedItem().status == "confirmed") -->
+                                  <button type="submit" class="btn btn-default btn-danger" data-bind="click:$parent.handleUndoClick.bind($parent)"><i class="icon-undo"></i> Undo</button>
+                                  <!-- /ko -->
+                                </th>
                               </tr>
                             </tfoot>
                           </table>
-                    
                         <!-- /ko -->
                         <!-- ko if: invoices.length == 0 -->
                           <p>No outstanding invoices</p>
@@ -271,7 +336,15 @@
                     </tr>
                   </tbody>
                 </table>
-
+                <!-- ko if:tenants().length == 0 -->
+                  <div class="panel">
+                    <div class="panel-body">
+                      <p class="lead text-center">
+                        <i class="icon-search"></i> <strong>No matchng accounts found</strong>
+                      </p>
+                    </div>
+                  </div>
+                <!-- /ko -->
               </div>
           
         </div>

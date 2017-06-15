@@ -66,6 +66,11 @@ class MoneyDueIn {
           ko.cleanNode(document.getElementById("main-table"));
           ko.applyBindings(self, document.getElementById("main-table"));
         });
+      
+      $(window).resize(() => {
+        self.refreshTable();
+      });
+
     }
 
     compositionComplete() {

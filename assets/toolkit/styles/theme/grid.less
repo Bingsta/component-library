@@ -89,8 +89,12 @@
 
 .grid {
   display:flex;
-  width:100%;
+  //width:100%;
   align-items: stretch;
+}
+
+.grid--column {
+  flex-direction: column;
 }
 
 .grid-equals{
@@ -99,15 +103,26 @@
   }
 }
 
-.grid--padded{
-  .grid__item + .grid__item{
+.grid--padded:not(.grid--column){
+  > .grid__item + .grid__item{
     padding-left:@padding-large-horizontal;
   }
 }
+.grid--padded.grid--column {
+  > .grid__item + .grid__item{
+    padding-top:@padding-large-vertical;
+  }
+}
 
-.grid--padded-sm{
-  .grid__item + .grid__item{
+.grid--padded-sm:not(.grid--column){
+  > .grid__item + .grid__item{
     padding-left:@padding-small-horizontal;
+  }
+}
+
+.grid--padded-sm.grid--column {
+  > .grid__item + .grid__item{
+    padding-top:@padding-small-vertical;
   }
 }
 
