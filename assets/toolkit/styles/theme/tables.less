@@ -121,12 +121,17 @@ th {
 //
 // Default zebra-stripe styles (alternating gray and transparent backgrounds)
 
-.table-striped {
+.table-striped.table-expandable {
   > tbody > tr:nth-child(4n + 1) {
     background-color: @table-bg-accent;
   }
 }
 
+.table-striped {
+  > tbody > tr:nth-child(odd) {
+    background-color: @table-bg-accent;
+  }
+}
 
 // Hover effect
 //

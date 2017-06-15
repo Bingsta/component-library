@@ -89,6 +89,20 @@ class MoneyDueIn {
                   }
                   return data;
                 } },
+                { data: 'total' },
+                { data: 'paid' },
+                { render: function(data, type, full, meta){
+                  return `
+                      <form class="grid  grid--padded-sm">
+                        <div class="grid__item">
+                          <input type="text" style="width:100px" class="form-control input-xs" id="pay-input-${meta.row}" value="${(Math.round((full.total - full.paid)*100)/100)}" placeholder="Amount">
+                        </div>
+                        <div class="grid__item">
+                          <button type="submit" class="btn btn-success btn-xs" data-bind="click: addReceipt.bind(this, ${meta.row})">Add</button>
+                        </div>
+                      </form>`;
+                    }
+                },
                 { data: 'type', render: function(data) {
                     switch(data){
                       case "Rent demand":
@@ -112,33 +126,39 @@ class MoneyDueIn {
                   }
                   return data;
                 } },
-                { data: 'total' },
-                { data: 'paid' },
-                { render: function(data, type, full, meta){
-                  return `
-                      <form class="form-inline row">
-                        <div class="form-group  col-xs-8">
-                          <label class="sr-only" for="exampleInputAmount">Amount</label>
-                          <div class="input-group">
-                            <input type="text" class="form-control input-sm" id="pay-input-${meta.row}" value="${(Math.round((full.total - full.paid)*100)/100)}" placeholder="Amount">
-                          </div>
-                        </div>
-                        <div class="row">
-                          <button type="submit" class="btn btn-success btn-sm" data-bind="click: addReceipt.bind(this, ${meta.row})">Add</button>
-                        </div>
-                      </form>`;
-                    }
-                },
                 { data: 'notes', render: function(data){
                   return data? `<span class="badge badge-accent">${data}</span>` : '';
                 } }
             ]
           });
-          
+          this.refreshTable()
           ko.applyBindings(this, document.getElementById("main-table"));
         });
 
       
+    }
+
+    
+    public refreshTable() {
+      let self: MoneyDueIn = this;
+      console.log("refresh table");
+      let table = $("#main-table");
+      let tHeadTHs = table.find(">thead>tr>th");
+      let tHead = table.find(">")
+      table.find(">tbody").scroll((event) => {
+        table.find(">thead").scrollLeft(event.currentTarget.scrollLeft);
+      });
+      table.find(">tbody>tr:first-child>td").each((index, value) => {
+        console.log($(tHeadTHs[index]).outerWidth())
+        $(value).css({minWidth : $(tHeadTHs[index]).outerWidth()});
+      });
+    }
+
+    
+    public handleTableScroll(model:ReceiptBankStatement, event: JQueryEventObject) {
+      //scroll the thead horizontaly so it appears to stick to the columns
+      model.appListThead.scrollLeft(event.currentTarget.scrollLeft);
+
     }
   
     public selectFile() {
@@ -198,6 +218,10 @@ class MoneyDueIn {
       model.updateTable();
     }
 
+    public showReceiptDetails(model, event) {
+      alert(`Show details for receipt ${model.id}`)
+    }
+
     public removeReceipt(item: Receipts,event: JQueryEventObject){
       let self: MoneyDueIn = this;
       item.invoice.paid = (Math.round((item.invoice.paid - item.amount)*100)/100);
@@ -223,6 +247,7 @@ class MoneyDueIn {
       //reapply ko bindings
       ko.cleanNode(document.getElementById("main-table"));
       ko.applyBindings(self, document.getElementById("main-table"));
+      self.refreshTable()
     }
 
     public searchData(model, event: JQueryEventObject) {

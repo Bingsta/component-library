@@ -1,6 +1,6 @@
 <div class="app-container">
   <!-- ko widget: {kind:'productNavigation'}--><!--/ko-->
-  <div class="app-main">
+  <div class="app-main"   data-bind="css:{'app-navigation--open': uiController.appMenuOpen()}">
     <div class="app-header">
       <!-- ko widget: {kind:'globalHeader'}--><!--/ko-->
     </div>
@@ -9,11 +9,11 @@
 
         <div class="app-page-masthead app-page__header">
 
-          <div class="app-page-masthead__titlebar"> 
-            <div class="app-page-masthead__titlebar-left"> 
-              <h2 class="app-page-masthead__titlebar-title">Accounting</h2>
+          <div class="app-page-masthead__titlebar  header"> 
+            <div class="app-page-masthead__titlebar-left  header__left grid__item--fill"> 
+              <h3 class="app-page-masthead__titlebar-title  header__title">Accounting dashboard</h3>
             </div>
-            <div class="app-page-masthead__titlebar-right">
+            <div class="app-page-masthead__titlebar-right  header__right  grid grid-row--align-right">
               <div>
                 <label class="branch-data-select__label" for="branch-data-select">Showing data from </label>
               </div>
@@ -98,8 +98,111 @@
             </div>
           </div>
         </div>
-        <div class="app-page__content">
-          <section class="app-page-content__section">
+        <div class="app-page__content  app-page__content--horizontal-layout app-dashboard__content  grid  grid-equals  grid--padded ">
+
+          <section class="app-page-component  grid__item">
+            <header class="app-page-component__header  header">
+              <h4>Accounts</h4>
+            </header>
+            <div class="app-page-component__body">
+              <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>
+                    Account
+                  </th>
+                  <th>
+                    Type
+                  </th>
+                  <th>
+                    Balance
+                  </th>
+                  <th colspan="2">
+                    Last reconcile
+                  </th>
+                </tr>
+              </thead>
+              <tbody data-bind="foreach:accounts">
+                <tr>
+                  <td data-bind="text:title"></td>
+                  <td data-bind="text:type"></td>
+                  <td data-bind="text:balance.toLocaleString('en-UK', {style:'currency', currency:'GBP'})"></td>
+                  <td data-bind="text:$parent.dateFormat(lastReconcile, 'Do MMM')"></td>
+                  <td>
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-default  btn-xs">Reconcile</button>
+                      <button type="button" class="btn btn-default  btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li class="dropdown-header">Dropdown header</li>
+                        <li><a href="#">Something else here</a></li>
+                        <li class="disabled"><a href="#">Disabled link</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </section>
+
+          
+          <section class="app-page-component  grid__item">
+            <header class="app-page-component__header  header">
+              <h4>System accounts</h4>
+            </header>
+            <div class="app-page-component__body">
+              <table class="table table-hover">
+                  <tbody data-bind="foreach:systemAccounts">
+                    <tr>
+                      <td data-bind="text:title"></td>
+                      <td data-bind="text:balance.toLocaleString('en-UK', {style:'currency', currency:'GBP'})"></td>
+                      <td>
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="icon-menu3"></i></span>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li class="dropdown-header">Dropdown header</li>
+                            <li><a href="#">Something else here</a></li>
+                            <li class="disabled"><a href="#">Disabled link</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                  </tbody>
+                </table>
+            </div>
+          </section>
+
+          
+          <section class="app-page-component  grid__item">
+            <header class="app-page-component__header  header">
+              <h4>Sub-accounts</h4>
+            </header>
+            <div class="app-page-component__body">
+                <table class="table table-hover">
+                  <tbody data-bind="foreach:subAccounts">
+                    <tr>
+                      <td data-bind="text:title"></td>
+                      <td><label class="badge badge-accent" data-bind="text:count"></label></td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+          </section>
+          <!--<section class="app-page-content__section">
             <h3>Accounts</h3>
             <table class="table table-hover">
               <thead>
@@ -190,7 +293,7 @@
                 </table>
             
             </div>
-          </section>
+          </section>-->
         </div>
       </div>
     </div>

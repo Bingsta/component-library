@@ -165,15 +165,15 @@ class ReceiptBankStatement {
         });
     }
 
-    public openAccordianSection(section, model, event) {
-      model.showAutoMatched(false);
-      model.showUnmatched(false);
-      model.showConfirmed(false);
+    public handleOpenAccordianClick(section, model, event) {
+      this.openAccordianSection(section);
+    }
+
+    public openAccordianSection(section) {
+      this.showAutoMatched(false);
+      this.showUnmatched(false);
+      this.showConfirmed(false);
       section(!section());
-      console.log(this);
-      console.log(model);
-      console.log(event);
-      console.log(section);
     }
 
     public expandRow(item, event) {
@@ -187,17 +187,211 @@ class ReceiptBankStatement {
       console.log("refresh table");
       let tHeadTHs = self.table.find(">thead>tr>th");
       self.table.find(">tbody>tr:first-child>td").each((index, value) => {
-          $(value).width($(tHeadTHs[index]).width());
+          $(value).css({minWidth : $(tHeadTHs[index]).outerWidth()});
         });
     }
 
     public handleAllocateToAccountClick(item, event) {
-      item.status = "confirmed";
-      this.autoMatched.remove(this.selectedItem());
-      this.confirmed.push(this.selectedItem());
-      console.log(this.selectedItem().index);
-      this.selectedItem(this.statement()[this.selectedItem().index + 1]);
+      let currentIndex = null
+      
+      if(!this.selectedItem().matchingAccount) {
+        this.selectedItem().matchingAccount = item;
+        item.matchingPayments.push(this.selectedItem());
+        this.confirmItemAllocation(this.selectedItem(), this.notMatched);
+        
+        currentIndex = this.notMatched().findIndex((item) => {
+          return item == this.selectedItem();
+        });
+
+        if(this.selectSectionIndex(this.notMatched, currentIndex + 1, $("#statement-group-notMatched .accordian-body__inner"), this.showUnmatched)) {
+          
+        }
+        else if(this.selectSectionIndex(this.autoMatched, currentIndex + 1, $("#statement-group-autoMatched .accordian-body__inner"), this.showAutoMatched)) {
+          
+        }
+        else {
+          this.selectSectionIndex(this.confirmed, currentIndex + 1, $("#statement-group-confirmed .accordian-body__inner"), this.showConfirmed);
+        }
+      }
+      else{
+        this.confirmItemAllocation(this.selectedItem(), this.autoMatched);
+        
+        currentIndex = this.autoMatched().findIndex((item) => {
+          return item == this.selectedItem();
+        });
+
+        if(this.selectSectionIndex(this.autoMatched, currentIndex + 1, $("#statement-group-autoMatched .accordian-body__inner"), this.showAutoMatched)) {
+          
+        }
+        else if(this.selectSectionIndex(this.notMatched, currentIndex + 1, $("#statement-group-notMatched .accordian-body__inner"), this.showUnmatched)) {
+          
+        }
+        else {
+          this.selectSectionIndex(this.confirmed, currentIndex + 1, $("#statement-group-confirmed .accordian-body__inner"), this.showConfirmed);
+        }
+      }
     }
+
+    public confirmItemAllocation(receipt, section) {
+      receipt.matchingAccount.status = "confirmed";
+      receipt.status = "confirmed";
+      section.remove(receipt);
+      this.confirmed.push(receipt);
+      console.log(receipt.index);
+    }
+
+    public selectNextItem() {
+      let currentItem = this.getCurrentSectionAndIndex();
+      if(!this.selectSectionIndex(currentItem.section, currentItem.index + 1, currentItem.element, currentItem.show))
+      {
+        switch(currentItem.section){
+          case this.autoMatched:
+            if(this.selectSectionIndex(this.notMatched, 0, $("#statement-group-notMatched .accordian-body__inner"), this.showUnmatched)) {
+              
+            }
+            else if(this.selectSectionIndex(this.confirmed, 0, $("#statement-group-confirmed .accordian-body__inner"), this.showConfirmed)) {
+              
+            }
+            else {
+               this.selectSectionIndex(this.autoMatched, this.autoMatched().length-1, $("#statement-group-autoMatched .accordian-body__inner"), this.showAutoMatched);
+            }
+          break;
+          case this.notMatched:
+            if(this.selectSectionIndex(this.confirmed, 0, $("#statement-group-confirmed .accordian-body__inner"), this.showConfirmed)) {
+              
+            }
+            else if(this.selectSectionIndex(this.autoMatched, 0, $("#statement-group-autoMatched .accordian-body__inner"), this.showAutoMatched)) {
+              
+            }
+            else {
+              this.selectSectionIndex(this.notMatched, 0, $("#statement-group-notMatched .accordian-body__inner"), this.showUnmatched);
+            }
+          break;
+          case this.confirmed:
+            if(this.selectSectionIndex(this.autoMatched, 0, $("#statement-group-autoMatched .accordian-body__inner"), this.showAutoMatched)) {
+              
+            }
+            else if(this.selectSectionIndex(this.notMatched, 0, $("#statement-group-notMatched .accordian-body__inner"), this.showUnmatched)) {
+              
+            }
+            else {
+              this.selectSectionIndex(this.confirmed, 0, $("#statement-group-confirmed .accordian-body__inner"), this.showConfirmed);
+            }
+          break;
+          default:
+            alert("No current selection")
+        }
+      }
+    }
+
+    public selectPreviousItem() {
+      let currentItem = this.getCurrentSectionAndIndex();
+      if(!this.selectSectionIndex(currentItem.section, currentItem.index - 1, currentItem.element, currentItem.show))
+      {
+        switch(currentItem.section){
+          case this.autoMatched:
+            if(this.selectSectionIndex(this.confirmed, this.confirmed().length-1, $("#statement-group-confirmed .accordian-body__inner"), this.showConfirmed)) {
+              
+            }
+            else if(this.selectSectionIndex(this.notMatched, this.notMatched().length-1, $("#statement-group-notMatched .accordian-body__inner"), this.showUnmatched)) {
+              
+            }
+            else {
+              this.selectSectionIndex(this.autoMatched, this.autoMatched().length-1, $("#statement-group-autoMatched .accordian-body__inner"), this.showAutoMatched);
+            }
+          break;
+          case this.notMatched:
+            if(this.selectSectionIndex(this.autoMatched, this.autoMatched().length-1, $("#statement-group-autoMatched .accordian-body__inner"), this.showAutoMatched)) {
+              
+            }
+            else if(this.selectSectionIndex(this.confirmed, this.confirmed().length-1, $("#statement-group-confirmed .accordian-body__inner"), this.showConfirmed)) {
+              
+            }
+            else {
+              this.selectSectionIndex(this.notMatched, this.notMatched().length-1, $("#statement-group-notMatched .accordian-body__inner"), this.showUnmatched);
+            }
+          break;
+          case this.confirmed:
+            if(this.selectSectionIndex(this.notMatched, this.notMatched().length-1, $("#statement-group-notMatched .accordian-body__inner"), this.showUnmatched)) {
+              
+            }
+            else if(this.selectSectionIndex(this.autoMatched, this.autoMatched().length-1, $("#statement-group-autoMatched .accordian-body__inner"), this.showAutoMatched)) {
+              
+            }
+            else {
+              this.selectSectionIndex(this.confirmed, this.confirmed().length-1, $("#statement-group-confirmed .accordian-body__inner"), this.showConfirmed)
+            }
+          break;
+          default:
+          alert("sldk")
+        }
+      }
+    }
+
+    public getCurrentSectionAndIndex() {
+      let currentSection = null;
+      let currentIndex = null;
+      let elementSection = null;
+      let showSection = null;
+
+      if(this.selectedItem()) {
+        switch(this.selectedItem().status){
+          case "auto-matched":
+          currentSection = this.autoMatched;
+          elementSection = $("#statement-group-autoMatched .accordian-body__inner");
+          showSection = this.showAutoMatched;
+          break;
+          case "not matched":
+          currentSection =  this.notMatched;
+          elementSection = $("#statement-group-notMatched .accordian-body__inner");
+          showSection = this.showUnmatched;
+          break;
+          case "confirmed":
+          currentSection =  this.confirmed;
+          elementSection = $("#statement-group-confirmed .accordian-body__inner");
+          showSection = this.showConfirmed;
+          break;
+        }
+      }
+      else {
+        currentSection =  null;
+      }
+      
+      if(currentSection){
+        currentIndex = currentSection().findIndex((item) => {
+          return item == this.selectedItem();
+        })
+      }
+
+      return {
+        section: currentSection,
+        element: elementSection,
+        index: currentIndex,
+        show: showSection
+      }
+    }
+
+
+    public selectSectionIndex(currentSection, index, sectionElement, showSection){
+      if(currentSection()[index]){
+  
+        this.openAccordianSection(showSection);
+        this.selectedItem(currentSection()[index]);
+        this.scrollToItemInSection(sectionElement, index)
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+    public scrollToItemInSection(sectionElement, index){
+      let selectedElement = sectionElement.find(`tr:nth-child(${index+1})`);
+      console.log(selectedElement);
+      console.log(selectedElement.position().top + sectionElement.scrollTop());
+      sectionElement.animate({scrollTop: selectedElement.position().top + sectionElement.scrollTop()});
+    }
+
 
     public handleStatementItemClick(item, event) {
       this.selectedItem(item);
@@ -302,26 +496,44 @@ class ReceiptBankStatement {
       });
     }
 
-    public confirmAllAutoAllocated() {
-      this.bankStatementData().forEach((item) => {
-        if(item.status() == 'auto-allocated'){
-          item.status('confirmed');
+    public handleConfirmAllClick() {
+      let self: ReceiptBankStatement = this;
+      let temp;
+      let confirmed = ko.observable();
+
+      confirmed.subscribe((confirmedDecision) => {
+        if(confirmedDecision) {
+             self.autoMatched().forEach((item) => {
+                item.matchingAccount.status = "confirmed";
+                item.status = "confirmed";
+                self.confirmed.push(item);
+            });    
+
+            temp = self.autoMatched.remove((item) => 
+              {
+                return item.status == "confirmed";
+              }
+            );
         }
-      })
-    }
+      });
+
+      this.uiController.showModal({kind:"confirm", title:"Confirm auto-matched items", message: "Are you sure you want to confirm these items?", confirm:confirmed});
+
+   
+  }
+  
 
     public completeReceiptProcessing(){
       let temp:array = [];
-      this.bankStatementData().forEach((item) => {
+      this.confirmed.forEach((item) => {
         //remove all confirmed items
         if(item.status() == "confirmed"){
-          this.data.remove(item.matchingInvoice);
+          this.tenants.remove(item.matchingAccount);
           temp.push(item);
         }
       });
-      this.bankStatementData.removeAll(temp);
+      this.confirmed.removeAll(temp);
       this.table.updateTable();
-      this.selectedItem(this.bankStatementData()[0]);
     }
 
     public removeItemFromList(item, list){
@@ -333,8 +545,19 @@ class ReceiptBankStatement {
       }
     }
 
+    public handleProcessReceiptProceedClick() {
+      this.confirmed().forEach((item) => {
+        console.log("do something with account");
+        item.status = "completed";
+        item.matchingAccount.balance += parseInt(item.amount);
+      });
+      this.confirmed.removeAll();
+
+    }
+
     public processReceipts() {
       this.receiptsProcessingState(ProcessingState.notStarted);
+      console.log(this.receiptsProcessingState() == this.processEnum.completed);
       $('#process-receipts-modal').modal('show');
     }
 
