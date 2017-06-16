@@ -78,18 +78,20 @@ class ReceiptBankStatement {
       });
 
       this.selectedItem.subscribe((newItem) => {
-        self.tenants().forEach((item) => {
-          item.expanded(false);
-        });
-        if(newItem.matchingAccount) {
-          self.searchText(newItem.reference);
-          self.tenants([newItem.matchingAccount]);
+        if(newItem) {
+          self.tenants().forEach((item) => {
+            item.expanded(false);
+          });
+          if(newItem.matchingAccount) {
+            self.searchText(newItem.reference);
+            self.tenants([newItem.matchingAccount]);
+          }
+          else {
+            self.searchText(newItem.reference);
+            self.searchAccounts(newItem.reference);
+          }
+          self.refreshTable();
         }
-        else {
-          self.searchText(newItem.reference);
-          self.searchAccounts(newItem.reference);
-        }
-        self.refreshTable()
       });
 
       this.tenants.subscribe((newSet) => {
@@ -167,6 +169,7 @@ class ReceiptBankStatement {
               self.appListThead = this.table.find(">thead");
 
               self.selectedItem(self.statement()[0]);
+              
             });
           });
 
@@ -226,28 +229,37 @@ class ReceiptBankStatement {
     } 
 
     public handleUndoClick(item, event) {
-      
+      let confirmed = ko.observable(false);
       let self:receiptsProcessingState = this;
       let paymentIndex = item.matchingPayments.findIndex(
         (payment) => {
           return payment == self.selectedItem();
         }
       );
-      //unmatch account
-      if(paymentIndex >= 0){
-        item.matchingPayments.splice(paymentIndex,1);
-      }
-      console.log(item);
-      item.status = "not matched";
-      
-      //unmatch payment
-      this.selectedItem().matchingAccount == null;
-      this.selectedItem().status = "not matched";
-      
-      this.confirmed.remove(this.selectedItem());
-      this.notMatched.push(this.selectedItem());
 
-      this.selectSectionIndex(this.notMatched, this.notMatched().length-1, $("#statement-group-notMatched .accordian-body__inner"), this.showUnmatched);
+      confirmed.subscribe((decision) => {
+        if(decision) {
+            //unmatch account
+            if(paymentIndex >= 0){
+              item.matchingPayments.splice(paymentIndex,1);
+            }
+            console.log(item);
+            item.status = "not matched";
+            
+            //unmatch payment
+            self.selectedItem().matchingAccount == null;
+            self.selectedItem().status = "not matched";
+
+            self.confirmed.remove(self.selectedItem());
+            self.notMatched.push(self.selectedItem());
+
+            self.selectSectionIndex(self.notMatched, self.notMatched().length-1, $("#statement-group-notMatched .accordian-body__inner"), self.showUnmatched);
+        }
+      });
+
+      this.uiController.showModal({kind: 'confirm', message:'Are you sure you want to unconfirm this payment?', title: "Are you sure?", confirm: confirmed});
+
+
     }
 
     public handleAllocateToAccountClick(item, event) {
@@ -586,7 +598,6 @@ class ReceiptBankStatement {
 
       this.uiController.showModal({kind:"confirm", title:"Confirm auto-matched items", message: "Are you sure you want to confirm these items?", confirm:confirmed});
 
-   
   }
   
 
@@ -601,6 +612,7 @@ class ReceiptBankStatement {
       });
       this.confirmed.removeAll(temp);
       this.table.updateTable();
+
     }
 
     public removeItemFromList(item, list){
@@ -620,6 +632,16 @@ class ReceiptBankStatement {
       });
       this.confirmed.removeAll();
 
+      
+      if(this.selectSectionIndex(this.autoMatched, 0, $("#statement-group-autoMatched .accordian-body__inner"), this.showAutoMatched)) {
+        
+      }
+      else if(this.selectSectionIndex(this.notMatched, 0, $("#statement-group-notMatched .accordian-body__inner"), this.showUnmatched)) {
+        
+      }
+      else{
+        this.selectedItem(null);
+      }
     }
 
     public processReceipts() {

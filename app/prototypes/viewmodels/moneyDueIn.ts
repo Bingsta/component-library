@@ -65,6 +65,7 @@ class MoneyDueIn {
           //reapply ko bindings
           ko.cleanNode(document.getElementById("main-table"));
           ko.applyBindings(self, document.getElementById("main-table"));
+          self.refreshTable();
         });
       
       $(window).resize(() => {
@@ -77,7 +78,7 @@ class MoneyDueIn {
 
         this.getData('/dist/data/moneyDueIn.json').then((data) => {
           this.data(data);
-          console.log(this.data());
+          
           //create table
           this.table = $("#main-table").DataTable({
             searching :true,
@@ -96,14 +97,20 @@ class MoneyDueIn {
                 } },
                 { data: 'total' },
                 { data: 'paid' },
+                { data: 'balance' },
+                { render: function(data, type, full, meta){
+                  return `<input type="text" class="form-control input-xs" id="use-bal-input-${meta.row}" value="${full.balance}" placeholder="Amount">
+                          `;
+                    }
+                },
                 { render: function(data, type, full, meta){
                   return `
                       <form class="grid  grid--padded-sm">
                         <div class="grid__item">
-                          <input type="text" style="width:100px" class="form-control input-xs" id="pay-input-${meta.row}" value="${(Math.round((full.total - full.paid)*100)/100)}" placeholder="Amount">
+                          <input type="text" class="form-control input-xs" id="receipt-input-${meta.row}" value="${(Math.round((full.total - full.paid)*100)/100)}" placeholder="Amount">
                         </div>
                         <div class="grid__item">
-                          <button type="submit" class="btn btn-success btn-xs" data-bind="click: addReceipt.bind(this, ${meta.row})">Add</button>
+                          <button type="submit" class="btn btn-success btn-xs" data-bind="click: addReceipt.bind(this, ${meta.row})">Receipt</button>
                         </div>
                       </form>`;
                     }
@@ -154,7 +161,6 @@ class MoneyDueIn {
         table.find(">thead").scrollLeft(event.currentTarget.scrollLeft);
       });
       table.find(">tbody>tr:first-child>td").each((index, value) => {
-        console.log($(tHeadTHs[index]).outerWidth())
         $(value).css({minWidth : $(tHeadTHs[index]).outerWidth()});
       });
     }
@@ -207,16 +213,18 @@ class MoneyDueIn {
     }
 
     public addReceipt(index:number, model:MoneyDueIn, event:JQueryEventObject) {
-      let amount:number = parseFloat($(document.getElementById(`pay-input-${index}`)).val());
+      let amountReceipted:number = parseFloat($(document.getElementById(`receipt-input-${index}`)).val());
+      let useBalAmount:number = parseFloat($(document.getElementById(`use-bal-input-${index}`)).val());
+
       let invoice = model.data()[index];
       console.log(model.data());
 
 
-      invoice.paid = (Math.round((parseFloat(invoice.paid) + amount)*100)/100);
+      invoice.paid = (Math.round((parseFloat(invoice.paid) + amountReceipted + useBalAmount)*100)/100);
       model.basket.push({
         id: invoice.reference,
         payee: invoice.owed_by,
-        amount: amount,
+        amount: amountReceipted,
         invoice: invoice
       });
       
