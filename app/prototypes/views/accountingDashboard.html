@@ -31,7 +31,7 @@
           
           <div class="app-page-masthead__tabs">
             <ul class="nav nav-tabs">
-              <li role="presentation" class="active"><a href="#">Expected payments</a></li>
+              <li role="presentation" class="active"><a href="#">Money due in/out</a></li>
               <li role="presentation"><a href="#">Completed payments</a></li>
             </ul>
           </div>
@@ -60,7 +60,7 @@
                           </td>
                         </tr>
                         <!-- /ko -->
-                        <tr class="total-row">
+                        <tr class="total-row" data-bind="click:goToPage.bind(this,'moneyDueIn')">
                           <td class="title">
                             Total <label class="badge badge-accent" data-bind="text:moneyDueInData.total.count"></label>
                           </td>

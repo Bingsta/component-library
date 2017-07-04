@@ -9,7 +9,9 @@ requirejs.config({
         'bootstrap': '/node_modules/bootstrap/dist/js/bootstrap',
         'moment': '/node_modules/moment/moment',
         'dataTables': '/node_modules/datatables.net/js/jquery.dataTables',
-        'dataTables_buttons': '/node_modules/datatables.net-buttons/js/dataTables.buttons'
+        'dataTablesBs': '/node_modules/datatables.net-bs/js/dataTables.bootstrap',
+        'dataTablesFixedColumns': '/node_modules/datatables.net-fixedcolumns/js/dataTables.fixedColumns',
+        'dataTablesFixedHeader': '/node_modules/datatables.net-fixedheader/js/dataTables.fixedHeader'
     },
   shim: {
     bootstrap: {
@@ -19,19 +21,21 @@ requirejs.config({
     dataTables: {
             deps: ['jquery']
     },
-    dataTables_buttons: {
+    dataTablesFixedColumns: {
+            deps: ['dataTables']
+    },
+    dataTablesFixedHeader: {
             deps: ['dataTables']
         }
     },
     map: {
           '*': {
-            'datatables.net': 'dataTables',
-            'datatables.net-buttons': 'dataTables_buttons'
+            'datatables.net': 'dataTables'
         }
     }
 });
 
-define(['durandal/system', 'durandal/app', 'durandal/viewLocator', 'bootstrap', 'moment', 'dataTables'],  function (system, app, viewLocator, bootstrap, moment, dataTables) {
+define(['durandal/system', 'durandal/app', 'durandal/viewLocator', 'bootstrap'],  function (system, app, viewLocator, bootstrap, moment) {
     
     system.debug(true);
     app.title = "component-library";

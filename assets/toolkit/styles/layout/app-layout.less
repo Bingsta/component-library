@@ -466,17 +466,32 @@ body, html{
 /////////////////////////
 .table-component{
   height:100%;
-  .dataTables_wrapper {
-    height:100%;
-  }
+  display:flex;
+  flex-direction: column;
 }
 
-.table-component__header {
-
+.table-component__body {
+  flex:1;
+  max-height:~"calc(100% - 4rem)";
+  overflow-y: hidden;
+  overflow-x:visible;
 }
 
 .app-page-list {
   height:100%;
+}
+
+.testyTest {
+  th, td { white-space: nowrap; }
+    div.dataTables_wrapper {
+        margin: 0 auto;
+    }
+  table {
+    table-layout:fixed;
+  }
+  .dataTables_wrapper > .row {
+    margin:0;
+  }
 }
 
 .app-page-list__content {

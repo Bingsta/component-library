@@ -1,28 +1,23 @@
 {
-    "files": [
-    "typings/index.d.ts"
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "amd",
+    "target": "es5",
+    "types":[
+      "jquery",
+      "knockout",
+      "durandal",
+      "bootstrap",
+      "serialize-javascript",
+      "prismjs"
     ],
-    "compileOnSave": false,
-    "compilerOptions": {
-        "rootDir": "app/",
-        "baseUrl": "dist/",
-         "module":"amd",
-        "sourceMap": true,
-        "target": "es5",
-        "allowJs":true,
-        "noImplicitAny": false,
-        "noResolve": true,
-        "removeComments": true,
-        "noLib": false,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "pretty": true,
-        "allowSyntheticDefaultImports": false
-    },
-    "exclude": [
-        "node_modules",
-        "typings/index",
-        "typings/index.d.ts"
+    "lib" : [
+      "dom",
+      "es2015",
+      "es5",
+      "es6"
     ]
-   
+  }
 }

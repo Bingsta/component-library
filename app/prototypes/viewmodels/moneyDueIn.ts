@@ -4,8 +4,10 @@ import * as app from 'durandal/app';
 import * as router from 'plugins/router';
 import * as UIController from 'UIController';
 import * as $ from 'jquery';
-import dataTables from 'dataTables.net';
-import dataTables_buttons from 'dataTables.net-buttons';
+import * as dataTables from 'dataTables';
+import * as dataTablesBs from 'dataTablesBs';
+import * as dataTablesFixedColumns from 'dataTablesFixedColumns';
+import * as dataTablesFixedHeader from 'dataTablesFixedHeader';
 import * as moment from 'moment';
 
 
@@ -55,101 +57,127 @@ class MoneyDueIn {
     public uiController = UIController.instance;
 
     activate() {
-      let self:MoneyDueIn = this;
-        this.isLoading(true);
-        this.uiController.hideMenu(true);
-        this.searchText.subscribe((value)=> {
-          console.log(value);
-          self.table.search(value).draw();
-
-          //reapply ko bindings
-          ko.cleanNode(document.getElementById("main-table"));
-          ko.applyBindings(self, document.getElementById("main-table"));
-          self.refreshTable();
-        });
+      let dt = dataTables,
+          dtBs = dataTablesBs,
+          dtfc = dataTablesFixedColumns,
+          dtfh = dataTablesFixedHeader,
+          self:MoneyDueIn = this,
+          resizeTimeout;
       
-      $(window).resize(() => {
+      this.isLoading(true);
+      this.uiController.hideMenu(true);
+      this.searchText.subscribe((value)=> {
+        console.log(value);
+        self.table.search(value).draw();
+
+        //reapply ko bindings
+        ko.cleanNode(document.getElementById("main-table"));
+        ko.applyBindings(self, document.getElementById("main-table"));
         self.refreshTable();
       });
-
+    
     }
 
     compositionComplete() {
 
         this.getData('/dist/data/moneyDueIn.json').then((data) => {
           this.data(data);
+
+          let tableContainer = document.getElementById("app-main-table__container"),
+          table = document.getElementById("example");
+
+          console.log($(tableContainer).height());
+          this.table = $(table).DataTable( {
+              scrollY:        $(tableContainer).height()-41,
+              scrollX:        400,
+              scrollCollapse: true,
+              paging:         false,
+              searching:      false,
+              fixedColumns:   {
+                leftColumns:    0,
+                rightColumns:   2
+              },
+              info:           false
+          } );
           
           //create table
-          this.table = $("#main-table").DataTable({
-            searching :true,
-            paging :false,
-            data: this.data().filter(function(item){
-              return (Math.round((item.total - item.paid)*100)/100) > 0;
-            }),
-            dom: "t",
-            columns: [
-                { data: 'reference' },
-                { data: 'owed_by', render: function(data) {
-                  if(data.length > 15){
-                    return `<span data-toggle="tooltip" data-placement="top" title="${data}">${data.substr(0, 10) + "..."}</span>`;
-                  }
-                  return data;
-                } },
-                { data: 'total' },
-                { data: 'paid' },
-                { data: 'balance' },
-                { render: function(data, type, full, meta){
-                  return `<input type="text" class="form-control input-xs" id="use-bal-input-${meta.row}" value="${full.balance}" placeholder="Amount">
-                          `;
-                    }
-                },
-                { render: function(data, type, full, meta){
-                  return `
-                      <form class="grid  grid--padded-sm">
-                        <div class="grid__item">
-                          <input type="text" class="form-control input-xs" id="receipt-input-${meta.row}" value="${(Math.round((full.total - full.paid)*100)/100)}" placeholder="Amount">
-                        </div>
-                        <div class="grid__item">
-                          <button type="submit" class="btn btn-success btn-xs" data-bind="click: addReceipt.bind(this, ${meta.row})">Receipt</button>
-                        </div>
-                      </form>`;
-                    }
-                },
-                { data: 'type', render: function(data) {
-                    switch(data){
-                      case "Rent demand":
-                      return `<span class="label label-warning" data-toggle="tooltip" data-placement="top" title="${data}">RD</span>`;
-                      case "Work order":
-                      return `<span class="label label-info" data-toggle="tooltip" data-placement="top" title="${data}">WO</span>`;
-                      default:
-                        return data;
-                    }
-                } },
-                { data: 'regarding', render: function(data) {
-                  if(data.length > 20){
-                    return `<span data-toggle="tooltip" data-placement="top" title="${data}">${data.substr(0, 10) + "..."}</span>`;
-                  }
-                  return data;
-                } },
-                { data: 'due_on' },
-                { data: 'pay_to', render: function(data) {
-                  if(data.length > 15){
-                    return `<span data-toggle="tooltip" data-placement="top" title="${data}">${data.substr(0, 10) + "..."}</span>`;
-                  }
-                  return data;
-                } },
-                { data: 'notes', render: function(data){
-                  return data? `<span class="badge badge-accent">${data}</span>` : '';
-                } }
-            ]
-          });
-          this.refreshTable()
-          ko.applyBindings(this, document.getElementById("main-table"));
+          // this.table = $("#main-table").DataTable({
+          //   fixedColumns:   true,
+          //   searching:      true,
+          //   paging:         false,
+          //   data: this.data().filter(function(item){
+          //     return (Math.round((item.total - item.paid)*100)/100) > 0;
+          //   }),
+          //   order: [[9, "desc"]],
+          //   dom: "t",
+          //   columns: [
+          //       { data: 'reference' },
+          //       { data: 'owed_by', render: function(data) {
+          //         if(data.length > 15){
+          //           return `<span data-toggle="tooltip" data-placement="top" title="${data}">${data.substr(0, 10) + "..."}</span>`;
+          //         }
+          //         return data;
+          //       } },
+          //       { data: 'total' },
+          //       { data: 'paid' },
+          //       { data: 'balance' },
+          //       { render: function(data, type, full, meta){
+          //         return `<input type="text" class="form-control input-xs" id="use-bal-input-${meta.row}" value="${full.balance}" placeholder="Amount">
+          //                 `;
+          //           }
+          //       },
+          //       { render: function(data, type, full, meta){
+          //         return `
+          //             <form class="grid  grid--padded-sm">
+          //               <div class="grid__item">
+          //                 <input type="text" class="form-control input-xs" id="receipt-input-${meta.row}" value="${(Math.round((full.total - full.paid)*100)/100)}" placeholder="Amount">
+          //               </div>
+          //               <div class="grid__item">
+          //                 <button type="submit" class="btn btn-success btn-xs" data-bind="click: addReceipt.bind(this, ${meta.row})">Receipt</button>
+          //               </div>
+          //             </form>`;
+          //           }
+          //       },
+          //       { data: 'type', render: function(data) {
+          //           switch(data){
+          //             case "Rent demand":
+          //             return `<span class="label label-warning" data-toggle="tooltip" data-placement="top" title="${data}">RD</span>`;
+          //             case "Work order":
+          //             return `<span class="label label-info" data-toggle="tooltip" data-placement="top" title="Invoice">INV</span>`;
+          //             default:
+          //               return data;
+          //           }
+          //       } },
+          //       { data: 'regarding', render: function(data) {
+          //         if(data.length > 20){
+          //           return `<span data-toggle="tooltip" data-placement="top" title="${data}">${data.substr(0, 10) + "..."}</span>`;
+          //         }
+          //         return data;
+          //       } },
+          //       { type: "date", data: 'due_on' },
+          //       { data: 'pay_to', render: function(data) {
+          //         if(data.length > 15){
+          //           return `<span data-toggle="tooltip" data-placement="top" title="${data}">${data.substr(0, 10) + "..."}</span>`;
+          //         }
+          //         return data;
+          //       } },
+          //       { data: 'notes', render: function(data){
+          //         return data? `<span class="badge badge-accent">${data}</span>` : '';
+          //       } }
+          //   ]
+          // });
+
+          // this.refreshTable()
+          // ko.applyBindings(this, document.getElementById("main-table"));
         });
 
       
     }
 
+    public sizeTable() {
+      let table = document.getElementById("example");
+      
+    }
     
     public refreshTable() {
       let self: MoneyDueIn = this;
