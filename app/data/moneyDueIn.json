@@ -11,7 +11,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "671924936-3",
@@ -25,7 +27,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "475990834-X",
@@ -39,7 +43,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "021916335-9",
@@ -53,7 +59,9 @@
     "status": "unpaid",
     "notes": 14,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "389159440-2",
@@ -67,7 +75,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "800.00",
+    "arrearsCount": 1
   },
   {
     "reference": "431343840-8",
@@ -81,7 +91,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "806211755-3",
@@ -95,7 +107,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "639176022-5",
@@ -109,7 +123,9 @@
     "status": "unpaid",
     "notes": 4,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "187433344-0",
@@ -123,7 +139,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "168394168-3",
@@ -137,7 +155,9 @@
     "status": "unpaid",
     "notes": 8,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "706277504-5",
@@ -151,7 +171,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "661670387-8",
@@ -165,7 +187,9 @@
     "status": "unpaid",
     "notes": 12,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "557418007-3",
@@ -179,7 +203,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "974.00",
+    "arrearsCount": 1
   },
   {
     "reference": "228416477-3",
@@ -193,7 +219,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "836084812-2",
@@ -221,7 +249,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "677192479-3",
@@ -235,7 +265,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "423953011-3",
@@ -249,7 +281,9 @@
     "status": "unpaid",
     "notes": 1,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "513382760-1",
@@ -263,7 +297,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "784698707-0",
@@ -277,7 +313,9 @@
     "status": "unpaid",
     "notes": 15,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "424011958-8",
@@ -291,7 +329,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "50.00",
+    "arrearsCount": 1
   },
   {
     "reference": "329458535-7",
@@ -305,7 +345,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "208979163-2",
@@ -319,7 +361,9 @@
     "status": "unpaid",
     "notes": 9,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "968570552-6",
@@ -333,7 +377,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "218712219-0",
@@ -347,7 +393,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "332906371-8",
@@ -361,7 +409,9 @@
     "status": "unpaid",
     "notes": 15,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "662827011-4",
@@ -375,7 +425,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "2000.00",
+    "arrearsCount": 2
   },
   {
     "reference": "480531311-0",
@@ -389,7 +441,9 @@
     "status": "unpaid",
     "notes": 15,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "086492270-1",
@@ -403,7 +457,9 @@
     "status": "unpaid",
     "notes": 3,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "736753838-1",
@@ -417,7 +473,9 @@
     "status": "unpaid",
     "notes": 12,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "888896385-5",
@@ -431,7 +489,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "378273911-6",
@@ -445,7 +505,9 @@
     "status": "unpaid",
     "notes": 13,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "868053178-2",
@@ -459,7 +521,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "838328331-8",
@@ -473,7 +537,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "913016061-8",
@@ -487,7 +553,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "410343160-1",
@@ -501,7 +569,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "775274144-2",
@@ -515,7 +585,9 @@
     "status": "unpaid",
     "notes": 4,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "367674284-2",
@@ -529,7 +601,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "534018108-1",
@@ -543,7 +617,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "664916300-7",
@@ -557,7 +633,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "921140955-1",
@@ -571,7 +649,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "1470.00",
+    "arrearsCount": 1
   },
   {
     "reference": "767584028-3",
@@ -585,7 +665,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "312922494-7",
@@ -599,7 +681,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "267392446-9",
@@ -613,7 +697,9 @@
     "status": "unpaid",
     "notes": 14,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "976383471-6",
@@ -627,7 +713,9 @@
     "status": "unpaid",
     "notes": 12,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "899547046-1",
@@ -641,7 +729,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "521908759-2",
@@ -655,7 +745,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "182565780-7",
@@ -669,7 +761,9 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "959668408-6",
@@ -683,7 +777,9 @@
     "status": "unpaid",
     "notes": 8,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   },
   {
     "reference": "224313126-9",
@@ -697,6 +793,8 @@
     "status": "unpaid",
     "notes": null,
     "matchingPayment": null,
-    "balance": "0.00"
+    "balance": "0.00",
+    "arrearsTotal": "0.00",
+    "arrearsCount": 0
   }
 ]
