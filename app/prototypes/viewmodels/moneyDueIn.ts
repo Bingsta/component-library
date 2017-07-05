@@ -4,11 +4,9 @@ import * as app from 'durandal/app';
 import * as router from 'plugins/router';
 import * as UIController from 'UIController';
 import * as $ from 'jquery';
-import * as dataTables from 'dataTables';
-import * as dataTablesBs from 'dataTablesBs';
-import * as dataTablesFixedColumns from 'dataTablesFixedColumns';
-import * as dataTablesFixedHeader from 'dataTablesFixedHeader';
-import * as moment from 'moment';
+import 'dataTablesFixedColumns';
+import 'dataTablesFixedHeader';
+import * as moment from '../../../node_modules/moment/moment';
 
 
 /**
@@ -57,24 +55,19 @@ class MoneyDueIn {
     public uiController = UIController.instance;
 
     activate() {
-      let dt = dataTables,
-          dtBs = dataTablesBs,
-          dtfc = dataTablesFixedColumns,
-          dtfh = dataTablesFixedHeader,
-          self:MoneyDueIn = this,
-          resizeTimeout;
+      let self:MoneyDueIn = this;
       
       this.isLoading(true);
       this.uiController.hideMenu(true);
-      this.searchText.subscribe((value)=> {
-        console.log(value);
-        self.table.search(value).draw();
+      // this.searchText.subscribe((value)=> {
+      //   console.log(value);
+      //   self.table.search(value).draw();
 
-        //reapply ko bindings
-        ko.cleanNode(document.getElementById("main-table"));
-        ko.applyBindings(self, document.getElementById("main-table"));
-        self.refreshTable();
-      });
+      //   //reapply ko bindings
+      //   ko.cleanNode(document.getElementById("main-table"));
+      //   ko.applyBindings(self, document.getElementById("main-table"));
+      //   self.refreshTable();
+      // });
     
     }
 
@@ -88,18 +81,91 @@ class MoneyDueIn {
 
           console.log($(tableContainer).height());
           this.table = $(table).DataTable( {
-              scrollY:        $(tableContainer).height()-41,
-              scrollX:        400,
+              scrollY:        ($(tableContainer).height()-41),
+              scrollX:        true,
               scrollCollapse: true,
               paging:         false,
               searching:      false,
-              fixedColumns:   {
-                leftColumns:    0,
-                rightColumns:   2
-              },
-              info:           false
+              info:           false,
+              data:           this.data(),
+              columns: [
+                { name: 'reference',  data: 'reference' },
+                { name: 'owed_by',    data: 'owed_by'},
+                { name: 'total',      data: "total" },
+                { name: 'bal',        data: 'balance'},
+                { name: 'type',       data: 'type',
+                  render: function(data) {
+                      switch(data){
+                        case "Rent demand":
+                        return `<span class="label label-warning" data-toggle="tooltip" data-placement="top" title="${data}">RD</span>`;
+                        case "Work order":
+                        return `<span class="label label-info" data-toggle="tooltip" data-placement="top" title="Invoice">INV</span>`;
+                        default:
+                          return data;
+                      }
+                  }
+                },
+                { name: 'regarding',  data: 'regarding'},
+                { name: 'due_on',     data: 'due_on',         type:"date" },
+                { name: 'amounts',    data: 'paid',           orderable: false,       className: 'table__fixed-col',
+                  render: () => {
+                      return `<form class="grid  grid--padded-xs">
+                                <div class="grid__item">
+                                  <input type="text" style="width:8rem" class="form-control input-xs" placeholder="Amount" data-bind="attr: {id: 'use-bal-input-' + $index() }, value: balance">
+                                </div>
+                                <div class="grid__item">
+                                  <input type="text" style="width:8rem" class="form-control input-xs" placeholder="Amount" data-bind="attr: {id: 'receipt-input-' + $index() }, value: (Math.round((total - paid)*100)/100)">
+                                </div>
+                                <div class="grid__item grid__item--fill">
+
+                                  <div class="btn-group">
+                                    <button type="button" class="btn btn-success btn-xs" data-bind="click:$parent.addReceipt.bind($parent, $index)">Receipt&nbsp;&nbsp;<i class="icon-arrow-right2"></i></button>
+                                    <button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      <span class="caret"></span>
+                                      <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                      <li><a href="#">Receipt and pay landlord</a></li>
+                                      <li role="separator" class="divider"></li>
+                                      <li><a href="#">Receipt by cash</a></li>
+                                      <li><a href="#">Receipt by check</a></li>
+                                    </ul>
+                                  </div>
+                                  
+                                </div>
+                              </form>`;
+                  } 
+                },
+                { name: 'notes',      data: 'notes',          orderable: false,     className: 'table__fixed-col',
+                render: (data) => {
+                  console.log(data);
+                  switch(data > 0) {
+                    case true:
+                      return `<div class="iconCount iconCount-accent">
+                                <i class="iconCount__icon icon icon-bubble3"></i>
+                                <span class="iconCount__count">${data}</span>
+                              </div>`;
+                    case false:
+                      return `<div class="iconCount">
+                                <i class="iconCount__icon icon icon-bubble3"></i>
+                                <span class="iconCount__count"></span>
+                              </div>`
+                  }
+                  
+                }
+               },
+                { name: 'options',    data: null,             orderable: false,       className: 'table__fixed-col', 
+                  render: () => {
+                    return `<button class="btn btn-circle btn-sm btn-default"><i class="icon icon-menu"></i></button>`;
+                  } 
+                }
+              ]
+              fixedColumns: {
+                rightColumns:   3,
+                leftColumns:    0
+              }
           } );
-          
+
           //create table
           // this.table = $("#main-table").DataTable({
           //   fixedColumns:   true,
@@ -168,14 +234,9 @@ class MoneyDueIn {
           // });
 
           // this.refreshTable()
-          // ko.applyBindings(this, document.getElementById("main-table"));
+          // 
         });
 
-      
-    }
-
-    public sizeTable() {
-      let table = document.getElementById("example");
       
     }
     
@@ -193,13 +254,6 @@ class MoneyDueIn {
       });
     }
 
-    
-    public handleTableScroll(model:ReceiptBankStatement, event: JQueryEventObject) {
-      //scroll the thead horizontaly so it appears to stick to the columns
-      model.appListThead.scrollLeft(event.currentTarget.scrollLeft);
-
-    }
-  
     public selectFile() {
       let self: MoneyDueIn = this;
 
@@ -240,23 +294,25 @@ class MoneyDueIn {
       console.log("save receipts");
     }
 
-    public addReceipt(index:number, model:MoneyDueIn, event:JQueryEventObject) {
-      let amountReceipted:number = parseFloat($(document.getElementById(`receipt-input-${index}`)).val());
-      let useBalAmount:number = parseFloat($(document.getElementById(`use-bal-input-${index}`)).val());
+    public addReceipt(index, invoice, event) {
 
-      let invoice = model.data()[index];
-      console.log(model.data());
-
+      let amountReceipted:number = parseFloat($(document.getElementById(`receipt-input-${index()}`)).val() as string);
+      let useBalAmount:number = parseFloat($(document.getElementById(`use-bal-input-${index()}`)).val() as string);
 
       invoice.paid = (Math.round((parseFloat(invoice.paid) + amountReceipted + useBalAmount)*100)/100);
-      model.basket.push({
+      this.basket.push({
         id: invoice.reference,
         payee: invoice.owed_by,
         amount: amountReceipted,
         invoice: invoice
       });
-      
-      model.updateTable();
+      console.log(this.data().length);
+      this.data.remove(invoice);
+      ko.cleanNode(document.getElementById("example"));
+      ko.applyBindings({}, document.getElementById("example"));
+         
+      console.log(this.data().length);
+      //this.updateTable();
     }
 
     public showReceiptDetails(model, event) {
@@ -274,21 +330,23 @@ class MoneyDueIn {
     public updateTable(){
       let self: MoneyDueIn = this;
       //update data model - filter out row if balance paid
+      console.log(self.data().length)
       self.data(self.data().filter(function(item){
         return (Math.round((item.total - item.paid)*100)/100) > 0;
       }))
       
-      self.searchText("");
+      console.log(self.data().length)
+      // self.searchText("");
 
-      //update table and data model
-      self.table.clear();
-      self.table.rows.add(self.data());
-      self.table.draw();
+      // //update table and data model
+      // self.table.clear();
+      // self.table.rows.add(self.data());
+      // self.table.draw();
 
-      //reapply ko bindings
-      ko.cleanNode(document.getElementById("main-table"));
-      ko.applyBindings(self, document.getElementById("main-table"));
-      self.refreshTable()
+      // //reapply ko bindings
+      // ko.cleanNode(document.getElementById("main-table"));
+      // ko.applyBindings(self, document.getElementById("main-table"));
+      // self.refreshTable()
     }
 
     public searchData(model, event: JQueryEventObject) {

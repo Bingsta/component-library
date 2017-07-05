@@ -2,22 +2,13 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "sourceMap": true,
-    "noImplicitAny": true,
     "module": "amd",
     "target": "es5",
-    "types":[
-      "jquery",
-      "knockout",
-      "durandal",
-      "bootstrap",
-      "serialize-javascript",
-      "prismjs"
-    ],
-    "lib" : [
-      "dom",
-      "es2015",
-      "es5",
-      "es6"
+    "allowJs":true,
+    "noImplicitAny": false,
+    "noResolve": true,
+    "typeRoot":[
+      "node_modules/@types"
     ]
   }
 }
