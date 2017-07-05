@@ -119,6 +119,11 @@
     padding-left:@padding-small-horizontal;
   }
 }
+.grid--padded-xs:not(.grid--column){
+  > .grid__item + .grid__item{
+    padding-left:@padding-xs-horizontal;
+  }
+}
 
 .grid--padded-sm.grid--column {
   > .grid__item + .grid__item{
@@ -144,6 +149,11 @@
   }
 }
 
+.grid-row.grid--padded-xs{
+  .grid__item + .grid__item{
+    padding-top:@padding-small-vertical;
+  }
+}
  .grid-row--fill{
 
  }
